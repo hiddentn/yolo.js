@@ -13,7 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     libraryTarget: 'umd',
-    library: 'yolo.js',
+    library: 'YOLO',
     umdNamedDefine: true
   },
   resolve: {

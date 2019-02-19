@@ -2,8 +2,6 @@ import  { TinyYOLOv2Config } from './config';
 import { YOLODetectorConfig, YOLOInput , Detection, YOLOVersion , ImageOptions , modelSize , RawBox} from '../types'
 import * as tf from '@tensorflow/tfjs';
 
-const defaultModelUrl:string = '';
-
 interface IYOLODetector {
 
   Model:tf.Model;
@@ -32,7 +30,7 @@ interface IYOLODetector {
 
     Model:tf.Model;
   
-    constructor(options:YOLODetectorConfig = {...TinyYOLOv2Config, modelURL : defaultModelUrl}) {
+    constructor(options:YOLODetectorConfig = {...TinyYOLOv2Config}) {
       this.modelURL = options.modelURL;
       this.version= options.version;
       this.modelSize= options.modelSize;
@@ -51,7 +49,7 @@ interface IYOLODetector {
 
     public async Load():Promise<Boolean>{
       try {
-        this.Model = await tf.loadModel(this.modelURL);
+        this.Model = await tf.loadLayersModel(this.modelURL);
         return true;
       } catch (e) {
         console.error(e);

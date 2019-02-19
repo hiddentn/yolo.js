@@ -21,10 +21,8 @@ export interface YOLODetectorConfig {
     labels:string[]
     anchors: number[][],
     masks:number[][],
-
     //misc
     ResizeOption:ImageOptions
-
 }
 
 export interface RawBox {

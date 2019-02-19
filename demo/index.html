@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <img id="test" src="./horses.jpg" alt="" srcset="">
+    
+    <script src="../dist/yolo.js.js"></script>
+    <script>
+        const Config = {
+            ...YOLO.TinyYOLOv2Config,
+            modelURL : "../models/ObjectDetection/yolov2-tiny_nobn/model.json",
+        }
+        let tf = YOLO.tf
+        tf.ENV.set('WEBGL_PACK', true)
+        tf.ENV.set('PROD', true);
+        //tf.ENV.set('DEBUG', true)
+
+        const det = new  YOLO.YOLODetector(Config);
+
+        (async ()=>{
+            await det.Load()
+            await det.Cache()
+            console.log(det)
+            let img = document.getElementById('test');
+
+            for (let index = 0; index < 20; index++) {
+                let p = performance.now()
+                const detection = det.DetectSync(img);
+                let p2 = performance.now()
+                console.log(p2-p)
+                console.log(detection)
+            }
+           
+        })()
+
+        
+      
+    </script>
+</body>
+</html>
