@@ -1,0 +1,32 @@
+{
+  "name": "yolo.js",
+  "version": "0.0.1",
+  "description": "yolo object detection in javascript",
+  "main": "index.js",
+  "scripts": {
+    "tsc-build": "tsc && tsc -m es6 --outDir lib-esm",
+    "pack": "webpack",
+    "build": "npm run tsc-build && npm run pack"
+  },
+  "keywords": [
+    "yolo",
+    "objectdetection",
+    "tfjs",
+    "ai",
+    "ml"
+  ],
+  "author": "TheHidden1",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow/tfjs": "^0.15.2"
+  },
+  "devDependencies": {
+    "acorn": "^6.1.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "terser-webpack-plugin": "^1.2.2",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
+  }
+}
