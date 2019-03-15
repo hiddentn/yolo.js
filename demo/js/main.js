@@ -1,7 +1,7 @@
 let tf = YOLO.tf;
 let VidElem = document.getElementById('source');
 let CanvasElem = document.getElementById('detection');
-const MaxFramrate = 20;
+const MaxFramrate = 30;
 // stats
 let stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom

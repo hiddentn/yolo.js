@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "tsc-build": "tsc && tsc -m es6 --outDir lib-esm",
-    "pack": "webpack",
+    "webpack": "webpack",
     "build": "npm run tsc-build && npm run pack"
   },
   "keywords": [
