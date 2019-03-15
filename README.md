@@ -1,5 +1,3 @@
 # YOLO.JS
 
-
-# this is very early  you should not  use this,
-## this is me just playing around
+## a work in progress implementaion of the YOLO object detection in javascript running under Tensorflow.js 
