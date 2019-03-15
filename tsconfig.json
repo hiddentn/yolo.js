@@ -6,7 +6,6 @@
     "outDir": "./lib",
     "sourceMap": true,
     "declaration": true,
-
     "moduleResolution": "node",
     "noImplicitAny": true,
     "removeComments": false,

@@ -17,6 +17,7 @@ export interface YOLODetectorConfig {
 
     iouThreshold: number,
     classProbThreshold: number,
+    maxOutput: number,
 
     labels:string[]
     anchors: number[][],
@@ -25,19 +26,10 @@ export interface YOLODetectorConfig {
     ResizeOption:ImageOptions
 }
 
-export interface RawBox {
-
-    Coords:number[]
-    Class:number;
-    Prob:number;
-}
-
-
 export interface Detection {
-
     label:string,
     labelIndex:number,
-    classProb:number,
+    score:number,
     x:number,
     y:number,
     w:number,

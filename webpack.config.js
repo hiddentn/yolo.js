@@ -3,8 +3,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: {
-    'yolo.js': './src/index.ts',
-    'yolo.js.min': './src/index.ts'
+    'yolo': './src/index.ts',
+    'yolo.min': './src/index.ts'
   },
   node: {
     fs: 'empty'

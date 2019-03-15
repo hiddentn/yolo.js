@@ -1,9 +1,18 @@
-import  { TinyYOLOv2Config } from './yolo/config';
-import  { YOLODetector } from './yolo/yolo';
 import * as tf from '@tensorflow/tfjs';
 
+import {
+  YOLOv3Config,
+  TinyYOLOv3Config,
+  TinyYOLOv2Config,
+  TinyYOLOLiteConfig,
+  Detector,
+} from './detector/index';
+
 module.exports = {
-    TinyYOLOv2Config,
-    YOLODetector,
-    tf,
-  };
+  YOLOv3Config,
+  TinyYOLOv3Config,
+  TinyYOLOv2Config,
+  TinyYOLOLiteConfig,
+  Detector,
+  tf,
+};
