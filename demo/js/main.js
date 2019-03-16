@@ -37,4 +37,4 @@ gui.open();
 let controlslayer = document.getElementById("controls-layer")
 controlslayer.appendChild(gui.domElement);
 controlslayer.appendChild(stats.dom);
-ControlsFolder.add(Loop, 'TestDetection').name('Perf Test')
+// ControlsFolder.add(Loop, 'TestDetection').name('Perf Test')
