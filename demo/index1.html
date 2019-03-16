@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <img id="image" src="./img/person.jpg" alt="" srcset="">
+    
+    <script src="/dist/yolo.js"></script>
+    <script async>
+        const img = document.getElementById("image")
+            const detector = new  YOLO.Detector({
+                ...YOLO.TinyYOLOLiteConfig,
+                modelSize: 416,
+                modelURL:'/models/ObjectDetection/yolov2-lite/model.json',
+            });
+
+
+            detector.load().then(()=>{
+                detector.detectAsync(img).then((dets)=>{
+                    console.log(dets)
+                })
+            })
+    </script>
+</body>
+</html>
