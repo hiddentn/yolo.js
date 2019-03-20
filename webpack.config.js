@@ -16,6 +16,9 @@ module.exports = {
     library: 'YOLO',
     umdNamedDefine: true
   },
+  externals: {
+    "@tensorflow/tfjs": "tf"
+},
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
   },
@@ -27,6 +30,7 @@ module.exports = {
       parallel: true,
       sourceMap: true, // Must be set to true if using source-maps in production
       terserOptions: {
+        extractComments: 'all',
         // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
       }
     })

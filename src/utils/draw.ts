@@ -1,15 +1,15 @@
-import {Detection} from '../types'
+import {Detection} from '../types';
 
 export function draw(detections:Detection[], ctx: CanvasRenderingContext2D, labelsLength:number) {
     ctx.lineWidth = 1.5;
-    ctx.font = "13px Segoe UI"
+    ctx.font = '13px Segoe UI';
     detections.forEach(det => {
-        DrawObject(det, ctx, labelsLength)
+        drawObject(det, ctx, labelsLength);
     });
 }
 
-function DrawObject(item:Detection, ctx:CanvasRenderingContext2D, max:number) {
-    let txt = ` ${item.label} : ${(item.score*100).toFixed(1)}%`;
+function drawObject(item:Detection, ctx:CanvasRenderingContext2D, max:number) {
+    const txt = ` ${item.label} : ${(item.score*100).toFixed(1)}%`;
     const color = hsl(item.labelIndex, 0, 50);
     ctx.strokeStyle = color;
     ctx.beginPath();
@@ -29,8 +29,8 @@ function DrawObject(item:Detection, ctx:CanvasRenderingContext2D, max:number) {
     }
 }
 function hsl(num:number, min:number, max:number) {
-    return "hsla(" + map(num, min, max) + ", 100%, 50%,1)";
+    return `hsla(${map(num, min, max)}, 100%, 50%,1)`;
 }
-function map(num:number, in_min:number, in_max:number) {
-    return ((num - in_min) * 360) / (in_max - in_min);
+function map(num:number, inmin:number, inmax:number) {
+    return ((num - inmin) * 360) / (inmax - inmin);
 }

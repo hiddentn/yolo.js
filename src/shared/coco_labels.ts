@@ -1,7 +1,4 @@
-
-
-
-const coco_labels:string[] =  [
+const cocoLabels:string[] =  [
     'person',
     'bicycle',
     'car',
@@ -83,4 +80,5 @@ const coco_labels:string[] =  [
     'hair drier',
     'toothbrush',
   ];
-export {coco_labels }
+
+export {cocoLabels };

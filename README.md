@@ -19,8 +19,8 @@ if every thing went sucessfully you should see a `yolo.js` and a `yolo.min.js` i
 
 ** basic usage : 
 ```html
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
 <script src='yolo.js'>
-/* note : tfjs is already shipped with yolo  so you dont need to include it  */
 ```
 
 ```javascript

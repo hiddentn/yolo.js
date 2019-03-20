@@ -11,27 +11,27 @@ export interface ImageOptions {
 }
 export interface YOLODetectorConfig {
 
-    modelURL: string,
-    version: YOLOVersion,
-    modelSize: modelSize,
+    modelURL: string;
+    version: YOLOVersion;
+    modelSize: modelSize;
 
-    iouThreshold: number,
-    classProbThreshold: number,
-    maxOutput: number,
+    iouThreshold: number;
+    classProbThreshold: number;
+    maxOutput: number;
 
-    labels:string[]
-    anchors: number[][],
-    masks:number[][],
+    labels:string[];
+    anchors: number[][];
+    masks:number[][];
     //misc
-    ResizeOption:ImageOptions
+    resizeOption:ImageOptions;
 }
 
 export interface Detection {
-    label:string,
-    labelIndex:number,
-    score:number,
-    x:number,
-    y:number,
-    w:number,
-    h:number,
+    label:string;
+    labelIndex:number;
+    score:number;
+    x:number;
+    y:number;
+    w:number;
+    h:number;
 }

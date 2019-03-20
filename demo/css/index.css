@@ -39,7 +39,7 @@ body {
     display: grid;
 }
 .main-wrapper-no-fullscreen {
-    grid-template-columns: 50px 1098px 1fr;
+    grid-template-columns: 50px 853px 1fr;
     grid-template-rows: 1fr 480px 1fr;
 }
 .main-wrapper-fullscreen {
@@ -54,8 +54,12 @@ body {
 .video-wrapper-no-fullscreen {
     grid-column: 2/3;
     grid-row: 2/3;
-    display: grid;
-    grid-template-columns: 1fr 245px;
+    position: relative;
+}
+.help-section {
+    position: relative;
+    grid-column: 3/4;
+    grid-row: 2/3;
 }
 
 .video-wrapper-fullscreen {

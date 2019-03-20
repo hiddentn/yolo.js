@@ -7,7 +7,7 @@ class DetectionLoop {
         this.IS_TRACK_STOPED = true;
 
         this.detector = new  YOLO.Detector({
-            ...YOLO.TinyYOLOLiteConfig,
+            ...YOLO.tinyYOLOLiteConfig,
             modelSize: 416,
             modelURL:'/models/ObjectDetection/yolov2-lite/model.json',
         });

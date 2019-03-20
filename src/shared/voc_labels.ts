@@ -1,4 +1,5 @@
-export default [
+const vocLabels:string[] =  [
+
 'aeroplane',
 'bicycle',
 'bird',
@@ -20,3 +21,4 @@ export default [
 'train',
 'tvmonitor',
 ];
+export { vocLabels };

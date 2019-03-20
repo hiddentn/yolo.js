@@ -1,18 +1,18 @@
 import * as tf from '@tensorflow/tfjs';
 
 import {
-  YOLOv3Config,
-  TinyYOLOv3Config,
-  TinyYOLOv2Config,
-  TinyYOLOLiteConfig,
+  yolov3Config,
+  tinyYOLOv3Config,
+  tinyYOLOv2Config,
+  tinyYOLOLiteConfig,
   Detector,
 } from './detector/index';
 
 module.exports = {
-  YOLOv3Config,
-  TinyYOLOv3Config,
-  TinyYOLOv2Config,
-  TinyYOLOLiteConfig,
+  yolov3Config,
+  tinyYOLOv3Config,
+  tinyYOLOv2Config,
+  tinyYOLOLiteConfig,
   Detector,
   tf,
 };

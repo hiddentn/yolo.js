@@ -1,4 +1,4 @@
-export default [
+const darknet900Labels:string[] =  [ 
     "thing",
     "matter",
     "object",
@@ -9417,5 +9417,5 @@ export default [
     "cloud",
     "snow",
     "wave",
-    
   ];
+  export {  darknet900Labels };

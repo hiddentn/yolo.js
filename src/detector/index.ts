@@ -1,10 +1,10 @@
-import  { YOLOv3Config, TinyYOLOv2Config, TinyYOLOv3Config, TinyYOLOLiteConfig } from './config';
+import  { yolov3Config, tinyYOLOv2Config, tinyYOLOv3Config, tinyYOLOLiteConfig } from './config';
 import  { Detector } from './yolo';
 
 export {
-    YOLOv3Config,
-    TinyYOLOv3Config,
-    TinyYOLOv2Config,
-    TinyYOLOLiteConfig,
+    yolov3Config,
+    tinyYOLOv3Config,
+    tinyYOLOv2Config,
+    tinyYOLOLiteConfig,
     Detector,
   };
