@@ -1,7 +1,8 @@
 import { cocoLabels } from "../shared/coco_labels";
-import { YOLODetectorConfig } from '../types';
+import { YOLODetectorConfig } from './detector';
 
 const tinyYOLOv3Config: YOLODetectorConfig  = {
+    modelName:'tiny-yolo-v3',
     modelURL:'',
     modelSize: 224,
     iouThreshold: .5,
@@ -18,6 +19,7 @@ const tinyYOLOv3Config: YOLODetectorConfig  = {
 };
 
 const tinyYOLOv2Config: YOLODetectorConfig = {
+    modelName:'tiny-yolo-v2',
     modelURL:'',
     modelSize: 224,
     iouThreshold: .5,
@@ -34,6 +36,7 @@ const tinyYOLOv2Config: YOLODetectorConfig = {
 };
 
 const yolov3Config: YOLODetectorConfig  = {
+    modelName:'yolo-v3',
     modelURL:'',
     modelSize: 224,
     iouThreshold: .5,
@@ -50,6 +53,7 @@ const yolov3Config: YOLODetectorConfig  = {
 };
 
 const tinyYOLOLiteConfig: YOLODetectorConfig = {
+    modelName:'tiny-yolo-v2-lite',
     modelURL:'',
     modelSize: 224,
     iouThreshold: .2,

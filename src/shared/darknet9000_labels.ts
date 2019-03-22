@@ -1,4 +1,4 @@
-const darknet900Labels:string[] =  [ 
+const darknet9000Labels:string[] =  [ 
     "thing",
     "matter",
     "object",
@@ -9418,4 +9418,4 @@ const darknet900Labels:string[] =  [
     "snow",
     "wave",
   ];
-  export {  darknet900Labels };
+  export {  darknet9000Labels };

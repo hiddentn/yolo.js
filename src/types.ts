@@ -1,37 +1,23 @@
 import { Tensor } from "@tensorflow/tfjs";
 
-export type  YOLOInput = HTMLCanvasElement | HTMLVideoElement | ImageData | HTMLImageElement | Tensor;
-export type  YOLOVersion = 'v2' | 'v3';
-export type  ImageResizeOption = 'NearestNeighbor' | 'Bilinear';
-export type  modelSize = 128 | 160 | 192 | 224 | 256 | 288 | 320 | 352 | 384 | 416;
+type  Input = HTMLCanvasElement | HTMLVideoElement | ImageData | HTMLImageElement | Tensor;
+type  YOLOVersion = 'v2' | 'v3';
+type  ImageResizeOption = 'NearestNeighbor' | 'Bilinear';
+type  modelSize = 128 | 160 | 192 | 224 | 256 | 288 | 320 | 352 | 384 | 416 | 448 | 480 | 512 | 544 | 576 | 608;
 
-export interface ImageOptions {
+interface ImageOptions {
     ResizeOption:ImageResizeOption;
     AlignCorners:boolean;
 }
-export interface YOLODetectorConfig {
-
-    modelURL: string;
-    version: YOLOVersion;
-    modelSize: modelSize;
-
-    iouThreshold: number;
-    classProbThreshold: number;
-    maxOutput: number;
-
-    labels:string[];
-    anchors: number[][];
-    masks:number[][];
-    //misc
-    resizeOption:ImageOptions;
-}
-
-export interface Detection {
+interface Classification {
     label:string;
     labelIndex:number;
     score:number;
+}
+interface Detection extends Classification {
     x:number;
     y:number;
     w:number;
     h:number;
 }
+export {Detection, Classification, ImageOptions, modelSize, ImageResizeOption, YOLOVersion, Input};

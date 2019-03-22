@@ -3,13 +3,25 @@ import {
   tinyYOLOv3Config,
   tinyYOLOv2Config,
   tinyYOLOLiteConfig,
-  Detector,
+  YOLODetector,
 } from './detector/index';
+
+import {
+  darknetRefrence,
+  darknet19,
+  tinydarknet,
+  DarknetClassifier,
+} from './classifier/index';
 
 module.exports = {
   yolov3Config,
   tinyYOLOv3Config,
   tinyYOLOv2Config,
   tinyYOLOLiteConfig,
-  Detector,
+  YOLODetector,
+
+  darknetRefrence,
+  darknet19,
+  tinydarknet,
+  DarknetClassifier,
 };
