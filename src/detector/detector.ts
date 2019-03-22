@@ -63,6 +63,8 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
     /**
      * Dispose the tensors allocated by the model. You should call this when you
      * are done with the model.
+     * 
+     * @return void
      */
     public dispose():void {
       if (this.model) {
@@ -121,7 +123,7 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
       const classesArr = classes.dataSync<'int32'>();
       tf.dispose([boxes, scores, classes]);
       const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr,this.iouThreshold);
-      return  this.finnalize(rawBoxes);
+      return  this.CreateDetectionArray(rawBoxes);
     }
 
     public async detectAsync(image:YOLOInput):Promise<Detection[]> {
@@ -133,7 +135,7 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
       tf.dispose(results);
       tf.dispose(filtred);
       const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr,this.iouThreshold);
-      const dets = this.finnalize(rawBoxes);
+      const dets = this.CreateDetectionArray(rawBoxes);
       return dets;
      
     }
@@ -199,12 +201,11 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
       const boxClassProbs = tf.softmax(reshaped.slice([0, 0, 0, 5], [outputWidth, outputHeight, anchorsLen, classesLen]))
                             .reshape([numBoxes, classesLen]);
       const classProbs = tf.mul(boxConfidence, boxClassProbs);
-      //prep /// this assumes the input is a square ie the width and height are equal (tat why we only use the input)
+      //prep
       const boxIndex = tf.range(0, outputWidth);
       const boxHeightIndex = tf.tile(boxIndex, [outputHeight]);
       const boxWidthindex = tf.tile(tf.expandDims(boxIndex, 0), [outputWidth, 1]).transpose().flatten();
       const boxIndexGrid = tf.transpose(tf.stack([boxHeightIndex, boxWidthindex])).reshape([outputWidth, outputHeight, 1, 2]);
-
       const convDims = tf.reshape(tf.tensor1d([outputWidth, outputHeight]), [1, 1, 1, 2]);
       // end
       boxxy = tf.div(tf.add(boxxy, boxIndexGrid), convDims);
@@ -243,73 +244,69 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
       //const ImageDims = tf.stack([Width, Height, Width, Height]).reshape([1, 4]);
       return boxes.mul(imageDims);
     }
-    // normaly this whoud be inside tf.tidy
-    // so i skipped the memory managment
+
+    /**
+     * filters boxes synchronously by a `classProbThresh` Threshold
+     * @param boxes a 2D box `tf.Tensor` with the shape of `[numBoxes,4]`
+     * @param scores a 2D scores  `tf.Tensor`  with the shape of `[numBoxes,labelsLength]`
+     * @param classProbThresh  a number indecating the score threshold defaults to .5
+     * 
+     * @return a  `tf.Tensor[]` constaining `[filtredBoxes, filtredScores, filtredClasses]`
+     * 
+     * normaly this would be inside a tf.tidy
+     * so i skipped on the memory managment
+     */
     private filterBoxes(boxes: tf.Tensor, scores: tf.Tensor, classProbThresh: number): tf.Tensor[] {
       const boxScore = tf.max(scores, -1);
       const boxClasses = tf.argMax(scores, -1);
-      // filter mask
+      // score filter mask
       const filterThresh = tf.scalar(classProbThresh);
       const filterMask = tf.greaterEqual(boxScore, filterThresh);
+
+      // this is somewhat a replacment for tf.boolean_mask
       const indicesTensor = tf.linspace(0, boxes.shape[0] - 1, boxes.shape[0]).toInt();
       const negativeIndicesTensor = tf.fill([boxes.shape[0]], -1, "int32");
       const indices = tf.where(filterMask, indicesTensor, negativeIndicesTensor);
       const filteredIndicesTensor = tf.tensor1d(indices.dataSync<'int32'> ().filter(i => i >= 0));
       return [boxes.gather(filteredIndicesTensor), boxScore.gather(filteredIndicesTensor), boxClasses.gather(filteredIndicesTensor)];
     }
-    // this is gooing to be called outside tf.tidy so we need to do memory managment manually
-    // the input & output tensors will be clean outside so we should clean only the local variables;
-    // TODO : there is a small memory leak here
-    private async filterBoxesAsync(boxes: tf.Tensor, scores: tf.Tensor, classProbThresh: number): Promise < tf.Tensor[] > {
+
+    /**
+     * filters boxes asynchronously by a `classProbThresh` Threshold
+     * @param boxes a 2D box `tf.Tensor` with the shape of `[numBoxes,4]`
+     * @param scores a 2D scores  `tf.Tensor`  with the shape of `[numBoxes,labelsLength]`
+     * @param classProbThresh  a number indecating the score threshold defaults to .5
+     * 
+     * @return a  `tf.Tensor[]` constaining `[filtredBoxes, filtredScores, filtredClasses]`
+     * 
+     * this is gooing to be called outside tf.tidy so we need to do memory managment manually
+     * the input & output tensors will be clean outside so we should clean only the local variables
+     */
+    private async filterBoxesAsync(boxes: tf.Tensor, scores: tf.Tensor, classProbThresh = .5): Promise < tf.Tensor[] > {
       const boxScore = tf.max(scores, -1);
       const boxClasses = tf.argMax(scores, -1);
       // filter mask
       const filterThresh = tf.scalar(classProbThresh);
       const filterMask = tf.greaterEqual(boxScore, filterThresh);
+      // i think we can replace this with tf.setdiff1dAsync(x, y)
+      // https://js.tensorflow.org/api/latest/#setdiff1dAsync
       const range = tf.linspace(0, boxes.shape[0] - 1, boxes.shape[0]);
       const indicesTensor = range.toInt();
       const negativeIndicesTensor = tf.fill([boxes.shape[0]], -1, "int32");
       const indices = tf.where(filterMask, indicesTensor, negativeIndicesTensor);
       const filteredIndicesTensor = tf.tensor1d((await indices.data<'int32'>()).filter(i => i >= 0));
+      //  END
       const filtredBoxes = boxes.gather(filteredIndicesTensor);
       const filtredScores = boxScore.gather(filteredIndicesTensor);
       const filtredClasses = boxClasses.gather(filteredIndicesTensor);
+
       tf.dispose([boxScore,boxClasses,filterThresh, filterMask,
                   range, indicesTensor, negativeIndicesTensor, 
                   indices, filteredIndicesTensor,]);
+
       return [filtredBoxes, filtredScores, filtredClasses];
     }
 
-    private CreateFinalBoxes(boxes: Float32Array, scores: number[], classes: number[], indexes: Int32Array): Detection[] {
-      const count = indexes.length;
-      const objects: Detection[] = [];
-      for (let i = 0; i < count; i++) {
-        const bbox = [];
-        for (let j = 0; j < 4; j++) {
-          bbox[j] = boxes[indexes[i] * 4 + j];
-        }
-        const maxY = bbox[0];
-        const maxX = bbox[1];
-        const minY = bbox[2];
-        const minX = bbox[3];
-        const w = minX -maxX ;
-        const h = minY- maxY ;
-        // const x = maxX + (w / 2);
-        // const y = maxY - (h / 2);
-        const classIndex = classes[indexes[i]];
-        const detection = {
-          label: this.labels[classIndex],
-          labelIndex: classIndex,
-          score: scores[indexes[i]],
-          x: maxX,
-          y: maxY,
-          w,
-          h,
-        };
-        objects.push(detection);
-      }
-      return objects;
-    }
     private getMaxScoresAndClasses(scores:Float32Array, numBoxes:number, numClasses:number):[number[], number[]]{
       const maxes = [];
       const classes = [];
@@ -329,6 +326,9 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
     }
 
     /** a small check to see if `toBeDetermined` is a `tf.Tensor` or a `tf.Tensor[]`
+     * @param  toBeDetermined `tf.Tensor<tf.Rank>` || `Array<tf.Tensor<tf.Rank>>`
+     * 
+     * @returns a `boolean` indecating if it's a   `tf.Tensor<tf.Rank>` or a  `Array<tf.Tensor<tf.Rank>>`
      */
     private isTensorOrTensorArray(toBeDetermined: tf.Tensor<tf.Rank> | Array<tf.Tensor<tf.Rank>>): toBeDetermined is tf.Tensor<tf.Rank> {
       if((toBeDetermined as tf.Tensor<tf.Rank>).shape){
@@ -336,6 +336,7 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
       }
       return false;
     }
+
     /** Implements Non-max Suppression
      * 
      * @param boxArr an array containing the boxes coords:Length must be `numBoxes*4`
@@ -374,6 +375,7 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
       }
       return out;
     }
+
     /** Implement the intersection over union (IoU) between box1 and box2
      * Arguments:
      * @param box1 -- first box, number list with coordinates `(x1, y1, x2, y2)`
@@ -395,13 +397,54 @@ export class Detector implements YOLODetector, YOLODetectorConfig {
        // compute the IoU
        return interarea / unionarea;
     }
+
+    /** a utility function similar to `CreateDetectionArray()` that takes the yolo output and returns a `Detection[]`
+     * 
+     * @param boxes  a Float32Array containing the boxes coords:Length must be `numBoxes*4`
+     * @param scores an array containing the boxes scores probability:Length must be `numBoxes`
+     * @param classes an array  containing the detection label index:Length must be `numBoxes`
+     * @param indexes a Float32Array containing the indexes of the boxes that we want to keep:Length must be `numBoxes`
+     * 
+     * @return a `Detection[]` with the final collected boxes
+     */
+    private CreateFinalBoxes(boxes: Float32Array, scores: number[], classes: number[], indexes: Int32Array): Detection[] {
+      const count = indexes.length;
+      const objects: Detection[] = [];
+      for (let i = 0; i < count; i++) {
+        const bbox = [];
+        for (let j = 0; j < 4; j++) {
+          bbox[j] = boxes[indexes[i] * 4 + j];
+        }
+        const maxY = bbox[0];
+        const maxX = bbox[1];
+        const minY = bbox[2];
+        const minX = bbox[3];
+        const w = minX -maxX ;
+        const h = minY- maxY ;
+        // const x = maxX + (w / 2);
+        // const y = maxY - (h / 2);
+        const classIndex = classes[indexes[i]];
+        const detection = {
+          label: this.labels[classIndex],
+          labelIndex: classIndex,
+          score: scores[indexes[i]],
+          x: maxX,
+          y: maxY,
+          w,
+          h,
+        };
+        objects.push(detection);
+      }
+      return objects;
+    }
+
     /** final step in the post processing that outputs the final `Detection[]`
      * 
      * @param finalBoxes an array containing the raw box information
      * 
      * @return a `Detection[]` with the final collected boxes
      */
-    private finnalize(finalBoxes:any[]):Detection[] {
+    private CreateDetectionArray(finalBoxes:any[]):Detection[] {
       const detections:Detection[] = [];
       for (let i = 0; i < finalBoxes.length; i += 1) {
         // add any out put you want 
