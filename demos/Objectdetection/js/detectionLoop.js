@@ -6,10 +6,10 @@ class DetectionLoop {
         this.IS_PAGE_VISIBLE = true;
         this.IS_TRACK_STOPED = true;
 
-        this.detector = new  YOLO.Detector({
-            ...YOLO.tinyYOLOLiteConfig,
+        this.detector = YOLO.Detector({
+            ...YOLO.tinyYOLOv2Config,
             modelSize: 416,
-            modelURL:'/models/ObjectDetection/yolov2-lite/model.json',
+            modelURL:'/models/ObjectDetection/yolov2-tiny/model.json',
         });
         this.StatMonitor = StatMonitor;
         this.videoSource = videoSource;

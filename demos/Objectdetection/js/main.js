@@ -1,4 +1,4 @@
-let tf = YOLO.tf;
+
 let VidElem = document.getElementById('source');
 let CanvasElem = document.getElementById('detection');
 const MaxFramrate = 30;

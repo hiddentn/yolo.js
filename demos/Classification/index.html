@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="app">
-    <nav class="navbar fixed-top navbar-light bg-light shadow-lg">
+    <nav class="navbar fixed-top navbar-light bg-light shadow">
         <label class="btn btn-outline-dark" for="my-file-selector">
             <input id="my-file-selector"  onchange="readURL(this)"  type="file" accept="image/png, image/jpeg" style="display:none;">
             Select an image
@@ -29,7 +29,7 @@
     <div class="part-one bg-light text-dark">
 
       <div class="img-wrapper bg-light">
-        <img id="classification-image"class="img-element" src="../img/horses.jpg" alt="" srcset="">
+        <img id="classification-image" class="img-element shadow-lg" src="../img/bird.jpg" alt="" srcset="">
       </div>
       <div class="result-wrapper border-left  border-light">
           <span id="result-text" style="font-size: 30px" class="text-dark font-weight-lighter text-monospace">
