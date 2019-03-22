@@ -4,7 +4,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
   entry: {
     'yolo': './src/index.ts',
-    'yolo.min': './src/index.ts'
   },
   node: {
     fs: 'empty'
@@ -23,19 +22,6 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js']
   },
   devtool: 'source-map',
-
-  optimization: {
-    minimizer: [new TerserPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: true, // Must be set to true if using source-maps in production
-      terserOptions: {
-        extractComments: 'all',
-        // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
-      }
-    })
-  ],
-  },
 
   module: {
     rules: [{
