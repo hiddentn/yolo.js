@@ -1,5 +1,3 @@
-import * as tf from '@tensorflow/tfjs';
-
 import {
   yolov3Config,
   tinyYOLOv3Config,
@@ -14,5 +12,4 @@ module.exports = {
   tinyYOLOv2Config,
   tinyYOLOLiteConfig,
   Detector,
-  tf,
 };
