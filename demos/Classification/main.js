@@ -49,7 +49,7 @@ function classifiy() {
         
     } else {
         alert("You should Load the model first")
-        
+
     }
    
 }

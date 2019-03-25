@@ -1,6 +1,6 @@
-import { DarknetClassifierConfig } from "./classifier";
+import { ClassifierConfig } from "./classifier";
 import { darknetImagnetLabels } from "../shared/darknet_imagenet_labels";
-const darknetRefrenceConfig: DarknetClassifierConfig = {
+const darknetRefrenceConfig: ClassifierConfig = {
     modelName:'darknet-refrence',
     modelURL:'',
     modelSize: 256,
@@ -12,7 +12,7 @@ const darknetRefrenceConfig: DarknetClassifierConfig = {
     },
     labels: darknetImagnetLabels,
 };
-const tinydarknetConfig: DarknetClassifierConfig = {
+const tinydarknetConfig: ClassifierConfig = {
     modelName:'tiny-darknet',
     modelURL:'',
     modelSize: 224,
@@ -24,7 +24,7 @@ const tinydarknetConfig: DarknetClassifierConfig = {
     },
     labels: darknetImagnetLabels,
 };
-const darknet19Config: DarknetClassifierConfig = {
+const darknet19Config: ClassifierConfig = {
     modelName:'darknet-19',
     modelURL:'',
     modelSize: 416,

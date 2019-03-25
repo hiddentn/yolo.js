@@ -1,9 +1,9 @@
 import { Input, Classification, ImageOptions, modelSize } from "../types";
-import { Classifier, DarknetClassifierConfig } from "./classifier";
+import { Classifier, ClassifierConfig } from "./classifier";
 import { preProcess } from "../utils/preProcess";
 import * as tf from "@tensorflow/tfjs";
 
-export class DarknetClassifier implements Classifier, DarknetClassifierConfig {
+export class DarknetClassifier implements Classifier, ClassifierConfig {
   model: tf.LayersModel;
 
   modelName: string;
@@ -14,7 +14,7 @@ export class DarknetClassifier implements Classifier, DarknetClassifierConfig {
   labels: string[];
   resizeOption: ImageOptions;
 
-  constructor(options: DarknetClassifierConfig) {
+  constructor(options:ClassifierConfig) {
     this.modelName = options.modelName;
     this.modelURL = options.modelURL;
     this.modelSize = options.modelSize;

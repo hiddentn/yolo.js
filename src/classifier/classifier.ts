@@ -8,7 +8,7 @@ interface Classifier {
   Classify(image: Input): Classification[];
 }
 
-interface DarknetClassifierConfig {
+interface ClassifierConfig {
 
   modelName:string;
   modelURL: string;
@@ -22,4 +22,4 @@ interface DarknetClassifierConfig {
   resizeOption: ImageOptions;
 }
 
-export { Classifier, DarknetClassifierConfig };
+export { Classifier, ClassifierConfig };

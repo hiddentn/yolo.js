@@ -7,10 +7,11 @@
     "url": "https://github.com/TheHidden1/YOLO.JS.git"
   },
   "scripts": {
+    "prebuild": "rimraf dist",
+    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "build": "npm run prebuild && webpack --config webpack.prod.js",
     "lint": "tslint -p . -t verbose",
-    "node-build": "tsc && tsc -m es6 --outDir lib-esm",
-    "webpack": "webpack",
-    "build": "npm run tsc-build && npm run webpack"
+    "node-build": "tsc && tsc -m es6 --outDir lib-esm"
   },
   "keywords": [
     "yolo",
@@ -28,9 +29,14 @@
   "devDependencies": {
     "@tensorflow/tfjs": "^1.0.0",
     "awesome-typescript-loader": "^5.2.1",
-    "terser-webpack-plugin": "^1.2.2",
+    "rimraf": "2.6.2",
+    "terser-webpack-plugin": "^1.2.3",
     "tslint": "^5.14.0",
+    "tslint-loader": "^3.5.4",
     "typescript": "^3.3.3",
-    "webpack": "^4.29.5"
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1",
+    "webpack-merge": "^4.2.1"
   }
 }

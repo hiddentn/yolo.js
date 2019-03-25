@@ -1,6 +1,5 @@
 import { Input , Detection, YOLOVersion , ImageOptions , modelSize} from '../types';
 import { Detector, YOLODetectorConfig } from "./detector";
-import { tinyYOLOv2Config } from './config';
 import { preProcess  } from '../utils/preProcess' ;
 import { draw } from '../utils/draw';
 import * as tf from '@tensorflow/tfjs';
@@ -21,7 +20,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
     masks:number[][];
     resizeOption:ImageOptions;
 
-    constructor(options:YOLODetectorConfig = tinyYOLOv2Config) {
+    constructor(options:YOLODetectorConfig) {
       this.modelName = options.modelName;
       this.modelURL = options.modelURL;
       this.version= options.version;
@@ -184,7 +183,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
     private postProcessRawPrediction(rawPrediction:tf.Tensor[] | tf.Tensor):tf.Tensor[] {
       const layers: Array<tf.Tensor<tf.Rank>> = [];
       if (this.isTensorOrTensorArray(rawPrediction)) {
-        // its a single Tensor
+        // its a single Tensor (v2)
         layers.push(rawPrediction);
       } else {
         rawPrediction.forEach(layer=>layers.push(layer));
@@ -234,7 +233,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       let boxwh = tf.exp(reshaped.slice([0, 0, 0, 2], [outputWidth, outputHeight, anchorsLen, 2]));
       const boxConfidence = tf.sigmoid(reshaped.slice([0, 0, 0, 4], [outputWidth, outputHeight, anchorsLen, 1])).reshape([numBoxes, 1]);
       const boxClassProbs = tf.softmax(reshaped.slice([0, 0, 0, 5], [outputWidth, outputHeight, anchorsLen, classesLen]))
-                            .reshape([numBoxes, classesLen]);
+                              .reshape([numBoxes, classesLen]);
       const classProbs = tf.mul(boxConfidence, boxClassProbs);
       //prep
       const boxIndex = tf.range(0, outputWidth);
@@ -245,7 +244,6 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       // end
       boxxy = tf.div(tf.add(boxxy, boxIndexGrid), convDims);
       boxwh = tf.mul(boxwh, anchorsTensor);
-
       if (version === 'v3') {
         boxwh = tf.div(boxwh, tf.tensor([modelSize]));
       } else {
@@ -390,7 +388,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      * @returns a `boolean` indicating if it's a `tf.Tensor` or a `tf.Tensor[]`
      */
     private isTensorOrTensorArray(toBeDetermined: tf.Tensor | tf.Tensor[]): toBeDetermined is tf.Tensor {
-      return (toBeDetermined as tf.Tensor<tf.Rank>).shape ? true : false;
+      return (toBeDetermined as tf.Tensor).shape ? true : false;
     }
 
     /** 
