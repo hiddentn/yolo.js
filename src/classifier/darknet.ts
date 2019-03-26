@@ -47,7 +47,7 @@ export class DarknetClassifier implements Classifier, ClassifierConfig {
    */
   public cache(): void {
     const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
-    this.Classify(dummy);
+    this.classify(dummy);
     tf.dispose(dummy);
   }
 
@@ -61,9 +61,10 @@ export class DarknetClassifier implements Classifier, ClassifierConfig {
     }
   }
 
-  public async ClassifyAsync(image: Input): Promise<Classification[]> {
+  public async classify(image: Input): Promise<Classification[]> {
+    await tf.nextFrame();
     const { values, indices } = tf.tidy(() => {
-      const logits = this.ClassifyInternal(image);
+      const logits = this.classifyInternal(image);
       const classes = tf.softmax(logits as tf.Tensor);
       return tf.topk(classes, this.topK, true);
     });
@@ -73,9 +74,9 @@ export class DarknetClassifier implements Classifier, ClassifierConfig {
     return this.createClassifications(valuesArray,indicesArray);
   }
 
-  public Classify(image: Input): Classification[] {
+  public classifySync(image: Input): Classification[] {
     const { values, indices } = tf.tidy(() => {
-      const logits = this.ClassifyInternal(image);
+      const logits = this.classifyInternal(image);
       const classes = tf.softmax(logits as tf.Tensor);
       return tf.topk(classes, this.topK, true);
     });
@@ -85,7 +86,7 @@ export class DarknetClassifier implements Classifier, ClassifierConfig {
     return this.createClassifications(valuesArray,indicesArray);
   }
 
-  private ClassifyInternal(image: Input): tf.Tensor | tf.Tensor[] {
+  private classifyInternal(image: Input): tf.Tensor | tf.Tensor[] {
     return tf.tidy(() => {
       const data = preProcess(image,this.modelSize,this.resizeOption
       );

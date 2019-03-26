@@ -9,10 +9,8 @@ interface Detector {
   load(): Promise<boolean>;
   cache(): void;
   dispose(): void;
-  detectAsync(image: Input): Promise<Detection[]>;
-  detect(image: Input): Detection[];
-  detectAsyncCPU(image: Input): Promise<Detection[]>;
-  detectCPU(image: Input): Detection[];
+  detect(image: Input): Promise<Detection[]>;
+  detectCPU(image: Input): Promise<Detection[]>;
   draw(detections: Detection[], canvas: HTMLCanvasElement): void;
 }
 
@@ -24,11 +22,9 @@ interface DetectorConfig {
   classProbThreshold: number;
   maxOutput: number;
   labels: string[];
-  //misc
   resizeOption: ImageOptions;
 }
 interface YOLODetectorConfig extends DetectorConfig {
-  
   version: YOLOVersion;
   modelSize: modelSize;
   anchors: number[][];

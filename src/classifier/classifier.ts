@@ -4,8 +4,7 @@ interface Classifier {
   load(): Promise<boolean>;
   cache(): void;
   dispose(): void;
-  ClassifyAsync(image: Input): Promise<Classification[]>;
-  Classify(image: Input): Classification[];
+  classify(image: Input): Promise<Classification[]>;
 }
 
 interface ClassifierConfig {

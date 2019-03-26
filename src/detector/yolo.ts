@@ -70,7 +70,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       }
     }
 
-    public detectCPU(image: Input): Detection[] {
+    public detectSyncCPU(image: Input): Detection[] {
       const results = this.predictInternal(image);
       const numBoxes = results[0].shape[0]; // || results[1].shape[0];
       const numClasses = results[1].shape[1];
@@ -90,7 +90,8 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       return finalBoxes;
     }
 
-    public async detectAsyncCPU(image: Input): Promise<Detection[]> {
+    public async detectCPU(image: Input): Promise<Detection[]> {
+      await tf.nextFrame();
       const results = this.predictInternal(image);
       const numBoxes = results[0].shape[0]; // || results[1].shape[0];
       const numClasses = results[1].shape[1];
@@ -111,7 +112,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       return finalBoxes;
     }
 
-    public detect(image:Input): Detection[] {
+    public detectSync(image:Input): Detection[] {
       const [boxes, scores, classes] = tf.tidy('', () => {
         const results = this.predictInternal(image);
         return this.filterBoxes(results[0], results[1], this.classProbThreshold);
@@ -124,7 +125,8 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       return  this.createDetectionArray(rawBoxes);
     }
 
-    public async detectAsync(image:Input):Promise<Detection[]> {
+    public async detect(image:Input):Promise<Detection[]> {
+      await tf.nextFrame();
       const results = this.predictInternal(image);
       const filtred = await this.filterBoxesAsync(results[0], results[1], this.classProbThreshold);
       const [boxArr, scoresArr, classesArr] = await  Promise.all([filtred[0].data<'float32'>(),

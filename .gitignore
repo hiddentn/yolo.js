@@ -8,7 +8,6 @@ yarn-error.log*
 node_modules
 lib
 lib-esm
-dist
 _bundles
 models
 

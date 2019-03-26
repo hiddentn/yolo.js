@@ -1000,4 +1000,4 @@ const darknetImagnetLabels:string[] = [
   "carbonara",
   "dumbbell"
 ];
-export {darknetImagnetLabels}
+export {darknetImagnetLabels};
