@@ -1,6 +1,6 @@
 {
   "name": "@hiddentn/yolo.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "YOLO Object detection in javascript & Nodejs",
   "repository": {
     "type": "git",
@@ -19,7 +19,6 @@
     "build:browser": "npm run prebuild && webpack --config webpack.prod.js",
     "build:node": "tsc",
     "lint": "tslint -p . -t verbose",
-   
     "prepublishOnly": "npm run clean:node && npm run lint",
     "prepare": "npm run build:node",
     "preversion": "npm run lint",
