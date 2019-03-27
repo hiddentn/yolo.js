@@ -19,8 +19,7 @@
     "build:browser": "npm run prebuild && webpack --config webpack.prod.js",
     "build:node": "tsc",
     "lint": "tslint -p . -t verbose",
-    "prepublishOnly": "npm run clean:node && npm run lint",
-    "prepare": "npm run build:node",
+    "prepublishOnly": "npm run clean:node && npm run lint && npm run build:node",
     "preversion": "npm run lint",
     "version": "git add -A src",
     "postversion": "git push && git push --tags"
