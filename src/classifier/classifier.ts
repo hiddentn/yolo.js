@@ -1,4 +1,4 @@
-import { Input, Classification, ImageOptions, modelSize } from "../types";
+import { Classification, ImageOptions, Input, modelSize } from '../types';
 
 interface Classifier {
   load(): Promise<boolean>;
@@ -9,7 +9,7 @@ interface Classifier {
 
 interface ClassifierConfig {
 
-  modelName:string;
+  modelName: string;
   modelURL: string;
   modelSize: modelSize;
 
@@ -17,7 +17,7 @@ interface ClassifierConfig {
   topK: number;
 
   labels: string[];
-  //misc
+  // misc
   resizeOption: ImageOptions;
 }
 

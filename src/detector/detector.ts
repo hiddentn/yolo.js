@@ -1,10 +1,10 @@
 import {
-  Input,
   Detection,
-  YOLOVersion,
   ImageOptions,
-  modelSize
-} from "../types";
+  Input,
+  modelSize,
+  YOLOVersion,
+} from '../types';
 interface Detector {
   load(): Promise<boolean>;
   cache(): void;

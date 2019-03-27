@@ -1,25 +1,42 @@
 {
-  "name": "yolo.js",
-  "version": "0.0.1",
-  "description": "yolo object detection in javascript",
+  "name": "@hiddentn/yolo.js",
+  "version": "0.0.4",
+  "description": "YOLO Object detection in javascript & Nodejs",
   "repository": {
     "type": "git",
     "url": "https://github.com/TheHidden1/YOLO.JS.git"
   },
+  "files": [
+    "lib/**/*",
+    "src/**/*"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "prebuild": "rimraf dist",
-    "start": "webpack-dev-server --open --config webpack.dev.js",
-    "build": "npm run prebuild && webpack --config webpack.prod.js",
+    "clean:browser": "rimraf dist",
+    "clean:node": "rimraf lib",
+    "start:browser": "webpack-dev-server --open --config webpack.dev.js",
+    "build:browser": "npm run prebuild && webpack --config webpack.prod.js",
+    "build:node": "tsc",
     "lint": "tslint -p . -t verbose",
-    "node-build": "tsc && tsc -m es6 --outDir lib-esm"
+   
+    "prepublishOnly": "npm run clean:node && npm run lint",
+    "prepare": "npm run build:node",
+    "preversion": "npm run lint",
+    "version": "git add -A src",
+    "postversion": "git push && git push --tags"
   },
+  "bugs": {
+    "url": "https://github.com/TheHidden1/YOLO.JS/issues"
+  },
+  "homepage": "https://github.com/TheHidden1/YOLO.JS#readme",
   "keywords": [
-    "yolo",
-    "classification",
-    "object detection",
-    "tfjs",
-    "ai",
-    "ml"
+    "YOLO",
+    "Classification",
+    "Object Detection",
+    "TF.js",
+    "AI",
+    "ML"
   ],
   "author": "TheHidden1",
   "license": "MIT",
@@ -28,6 +45,7 @@
   },
   "devDependencies": {
     "@tensorflow/tfjs": "^1.0.0",
+    "@types/node": "^11.12.0",
     "awesome-typescript-loader": "^5.2.1",
     "rimraf": "2.6.2",
     "terser-webpack-plugin": "^1.2.3",

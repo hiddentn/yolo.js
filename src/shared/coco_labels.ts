@@ -1,4 +1,4 @@
-const cocoLabels:string[] =  [
+const cocoLabels: string[] =  [
     'person',
     'bicycle',
     'car',

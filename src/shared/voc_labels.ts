@@ -1,4 +1,4 @@
-const vocLabels:string[] =  [
+const vocLabels: string[] =  [
 
 'aeroplane',
 'bicycle',

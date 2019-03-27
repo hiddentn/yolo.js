@@ -1,62 +1,61 @@
-import { Input , Detection, YOLOVersion , ImageOptions , modelSize} from '../types';
-import { Detector, YOLODetectorConfig } from "./detector";
-import { preProcess  } from '../utils/preProcess' ;
-import { draw } from '../utils/draw';
 import * as tf from '@tensorflow/tfjs';
+import { Detection , ImageOptions, Input , modelSize , YOLOVersion} from '../types';
+import { draw } from '../utils/draw';
+import { preProcess  } from '../utils/preProcess' ;
+import { Detector, YOLODetectorConfig } from './detector';
 
 export class YOLODetector implements Detector, YOLODetectorConfig {
 
-    model:tf.LayersModel;
+    public model: tf.LayersModel;
 
-    modelName: string;
-    modelURL: string;
-    version: YOLOVersion;
-    modelSize: modelSize;
-    iouThreshold: number;
-    classProbThreshold: number;
-    maxOutput: number;
-    labels:string[];
-    anchors: number[][];
-    masks:number[][];
-    resizeOption:ImageOptions;
+    public modelName: string;
+    public modelURL: string;
+    public version: YOLOVersion;
+    public modelSize: modelSize;
+    public iouThreshold: number;
+    public classProbThreshold: number;
+    public maxOutput: number;
+    public labels: string[];
+    public anchors: number[][];
+    public masks: number[][];
+    public resizeOption: ImageOptions;
 
-    constructor(options:YOLODetectorConfig) {
+    constructor(options: YOLODetectorConfig) {
       this.modelName = options.modelName;
       this.modelURL = options.modelURL;
-      this.version= options.version;
-      this.modelSize= options.modelSize;
-      this.iouThreshold= options.iouThreshold;
-      this.classProbThreshold= options.classProbThreshold;
+      this.version = options.version;
+      this.modelSize = options.modelSize;
+      this.iouThreshold = options.iouThreshold;
+      this.classProbThreshold = options.classProbThreshold;
       this.maxOutput = options.maxOutput;
-      this.labels= options.labels;
-      this.anchors= options.anchors;
-      this.masks= options.masks;
+      this.labels = options.labels;
+      this.anchors = options.anchors;
+      this.masks = options.masks;
       this.resizeOption = options.resizeOption;
     }
 
     /**
      * Loads the model from `modelURL`
      */
-    public async load():Promise<boolean>{
+    public async load(): Promise<boolean> {
       if (tf == null) {
         throw new Error(
-            `Cannot find TensorFlow.js. If you are using a <script> tag, please ` +
-            `also include @tensorflow/tfjs on the page before using this model.`);
+            'Cannot find TensorFlow.js. If you are using a <script> tag, please ' +
+            'also include @tensorflow/tfjs on the page before using this model.');
       }
       try {
         this.model = await tf.loadLayersModel(this.modelURL);
         return true;
       } catch (e) {
-        console.error(e);
         return false;
       }
     }
     /**
      * Caches the model
      */
-    public cache():void {
+    public cache(): void {
       const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
-      this.detect(dummy);
+      this.detectSync(dummy);
       tf.dispose(dummy);
     }
 
@@ -64,7 +63,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      * Dispose of the tensors allocated by the model. You should call this when you
      * are done with the detection.
      */
-    public dispose():void {
+    public dispose(): void {
       if (this.model) {
         this.model.dispose();
       }
@@ -102,7 +101,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       tf.setBackend('cpu');
       const [maxScores, classes] = this.getMaxScoresAndClasses(scoreArray, numBoxes, numClasses);
       const boxes2 = tf.tensor2d(boxArray, [results[0].shape[0], results[0].shape[1]]);
-      const indexTensor = await tf.image.nonMaxSuppressionAsync(boxes2, maxScores, this.maxOutput, 
+      const indexTensor = await tf.image.nonMaxSuppressionAsync(boxes2, maxScores, this.maxOutput,
                                                                 this.iouThreshold, this.classProbThreshold);
       const indexArray = await indexTensor.data<'int32'>();
       tf.dispose(boxes2);
@@ -112,7 +111,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       return finalBoxes;
     }
 
-    public detectSync(image:Input): Detection[] {
+    public detectSync(image: Input): Detection[] {
       const [boxes, scores, classes] = tf.tidy('', () => {
         const results = this.predictInternal(image);
         return this.filterBoxes(results[0], results[1], this.classProbThreshold);
@@ -121,11 +120,11 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       const scoresArr = scores.dataSync<'float32'>();
       const classesArr = classes.dataSync<'int32'>();
       tf.dispose([boxes, scores, classes]);
-      const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr,this.iouThreshold);
+      const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr, this.iouThreshold);
       return  this.createDetectionArray(rawBoxes);
     }
 
-    public async detect(image:Input):Promise<Detection[]> {
+    public async detect(image: Input): Promise<Detection[]> {
       await tf.nextFrame();
       const results = this.predictInternal(image);
       const filtred = await this.filterBoxesAsync(results[0], results[1], this.classProbThreshold);
@@ -134,39 +133,39 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
                                                                   filtred[2].data<'int32'>()]);
       tf.dispose(results);
       tf.dispose(filtred);
-      const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr,this.iouThreshold);
+      const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr, this.iouThreshold);
       const dets = this.createDetectionArray(rawBoxes);
       return dets;
-     
+
     }
 
     /**
      * Draw the detections on a `HTMLCanvasElement`
-     * @param detections  detections to be drawn 
-     * @param canvas `HTMLCanvasElement` to draw to 
+     * @param detections  detections to be drawn
+     * @param canvas `HTMLCanvasElement` to draw to
      */
-    public draw(detections:Detection[],canvas:HTMLCanvasElement):void{
+    public draw(detections: Detection[], canvas: HTMLCanvasElement): void {
       const ctx = canvas.getContext('2d');
       const lablesLen = this.labels.length;
-      draw(detections,ctx,lablesLen);
+      draw(detections, ctx, lablesLen);
     }
-    
+
     /**
      * the main function that handles the infrence it returns a `tf.Tensor[]` that containes the boxes the their scores
      * @param image the input image `Input`
-     * 
+     *
      * @return a `tf.Tensor[]` that contain `[Boxes, Scores]`
      * `Boxes` with a shape of `[numBoxes, 4]`
      * Each `box` is defined by `[maxY, maxX, minY, minX]`
      * Score with a shape of `[numBoxes, numClasses]`
      */
-    private predictInternal(image: Input):tf.Tensor[]{
+    private predictInternal(image: Input): tf.Tensor[] {
       return tf.tidy(() => {
-      const [imgWidth, imgHeight, data] = preProcess(image,this.modelSize,this.resizeOption);
-      const preds = this.model.predict(data,{batchSize:1});
+      const [imgWidth, imgHeight, data] = preProcess(image, this.modelSize, this.resizeOption);
+      const preds = this.model.predict(data, {batchSize: 1});
       const [boxes, scores] = this.postProcessRawPrediction(preds);
       const scaledBoxes = this.rescaleBoxes(boxes, imgWidth, imgHeight);
-      return [scaledBoxes,scores];
+      return [scaledBoxes, scores];
       });
     }
 
@@ -176,22 +175,22 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      * or a `tf.Tensor[]` representing multiple outputs (yolov3 has 3 outputs ).
      * each output has the shape of `[size, size, (numClasses+5) * numAnchors]`
      * with the 5 representing : Box Coodinates [4] + BoxConfidence [1]
-     * 
+     *
      * @return a `tf.Tensor[]` that contain `[Boxes, Scores]`
      * `Boxes` with a shape of `[numBoxes, 4]`
      * Each `box` is defined by `[maxY, maxX, minY, minX]`
      * Score with a shape of `[numBoxes, numClasses]`
      */
-    private postProcessRawPrediction(rawPrediction:tf.Tensor[] | tf.Tensor):tf.Tensor[] {
+    private postProcessRawPrediction(rawPrediction: tf.Tensor[] | tf.Tensor): tf.Tensor[] {
       const layers: Array<tf.Tensor<tf.Rank>> = [];
       if (this.isTensorOrTensorArray(rawPrediction)) {
         // its a single Tensor (v2)
         layers.push(rawPrediction);
       } else {
-        rawPrediction.forEach(layer=>layers.push(layer));
+        rawPrediction.forEach((layer) => layers.push(layer));
       }
-      const boxes:tf.Tensor[] = [];
-      const probs:tf.Tensor[] = [];
+      const boxes: tf.Tensor[] = [];
+      const probs: tf.Tensor[] = [];
 
       for (let i = 0; i < layers.length; i++) {
         const mask = this.masks[i];
@@ -202,7 +201,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
         }
         const anchorsTensor = tf.tensor(anchorsArr).reshape([1, 1, numAnchors, 2]);
         const classesLength = this.labels.length;
-        // remove the batch dim 
+        // remove the batch dim
         const squeezed = layers[i].squeeze([0]);
         const [box, prob] = this.processLayer(squeezed, anchorsTensor, this.modelSize, classesLength, this.version);
         boxes.push(box);
@@ -215,21 +214,22 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
     }
 
     /**
-     * Process 1 layer of the yolo output 
+     * Process 1 layer of the yolo output
      * @param prediction a `tf.Tensor` representing 1 output of  the neural net
      * @param anchorsTensor a `tf.Tensor` representing the anchors that correspond with the output
      * shape : `[numAnchors, 2]`
      * @param modelSize the input size for the neural net
      * @param classesLen the number of classes/labels that the neural net predicts
      * @param version yolo version `v2` || `v3`
-     * 
-     * @return a `tf.Tensor[]` that containes `[boxes , Scores]` that correspond to the specific layer 
+     *
+     * @return a `tf.Tensor[]` that containes `[boxes , Scores]` that correspond to the specific layer
      */
-    private processLayer(prediction:tf.Tensor, anchorsTensor:tf.Tensor, modelSize:number, classesLen:number, version: string):tf.Tensor[] {
+    // tslint:disable-next-line: no-shadowed-variable
+    private processLayer(prediction: tf.Tensor, anchorsTensor: tf.Tensor, modelSize: number, classesLen: number, version: string): tf.Tensor[] {
       const [outputWidth, outputHeight] = [prediction.shape[0], prediction.shape[1]];
       const anchorsLen = anchorsTensor.shape[2];
       const numBoxes = outputWidth * outputHeight * anchorsLen;
-      //classesLen + 5 =  classesLen + x + y + w + h + obj_score
+      // classesLen + 5 =  classesLen + x + y + w + h + obj_score
       const reshaped = tf.reshape(prediction, [outputWidth, outputHeight, anchorsLen, classesLen + 5]);
       let boxxy = tf.sigmoid(reshaped.slice([0, 0, 0, 0], [outputWidth, outputHeight, anchorsLen, 2]));
       let boxwh = tf.exp(reshaped.slice([0, 0, 0, 2], [outputWidth, outputHeight, anchorsLen, 2]));
@@ -237,7 +237,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       const boxClassProbs = tf.softmax(reshaped.slice([0, 0, 0, 5], [outputWidth, outputHeight, anchorsLen, classesLen]))
                               .reshape([numBoxes, classesLen]);
       const classProbs = tf.mul(boxConfidence, boxClassProbs);
-      //prep
+      // prep
       const boxIndex = tf.range(0, outputWidth);
       const boxHeightIndex = tf.tile(boxIndex, [outputHeight]);
       const boxWidthindex = tf.tile(tf.expandDims(boxIndex, 0), [outputWidth, 1]).transpose().flatten();
@@ -259,10 +259,10 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      * transforms the yolo bounding box coordinates from `center` to `top left` and joins them.
      * @param boxXY a `tf.Tensor` representing the boxes `X, Y` coordinates.
      * @param boxWH a `tf.Tensor` representing the boxes `Width, Height` values.
-     * 
+     *
      * @returns a `tf.Tensor` representing the transformed & joined boxes coordinates
      */
-    private boxesToCorners(boxXY:tf.Tensor, boxWH:tf.Tensor):tf.Tensor {
+    private boxesToCorners(boxXY: tf.Tensor, boxWH: tf.Tensor): tf.Tensor {
       const two = tf.scalar(2);
       const boxMins = tf.sub(boxXY, tf.div(boxWH, two));
       const boxMaxes = tf.add(boxXY, tf.div(boxWH, two));
@@ -283,7 +283,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      * @param boxes a `tf.Tensor` representing the boxes coordinates. shape : `[numBoxes,4]`
      * @param imgWidth original input image Width.
      * @param imgHeight  original input image Height.
-     * 
+     *
      * @return a `tf.Tensor` representing the scaled boxes coordinates.
      */
     private rescaleBoxes(boxes: tf.Tensor, imgWidth: number, imgHeight: number): tf.Tensor {
@@ -292,7 +292,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       // this for y1 x1 y2 x2
       const imageDims = tf.stack([height, width, height, width]).reshape([1, 4]);
       // this for x y w h
-      //const ImageDims = tf.stack([Width, Height, Width, Height]).reshape([1, 4]);
+      // const ImageDims = tf.stack([Width, Height, Width, Height]).reshape([1, 4]);
       return boxes.mul(imageDims);
     }
 
@@ -301,9 +301,9 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      * @param boxes a 2D box `tf.Tensor` with the shape of `[numBoxes,4]`
      * @param scores a 2D scores  `tf.Tensor`  with the shape of `[numBoxes,labelsLength]`
      * @param classProbThresh  a number indecating the score threshold defaults to .5
-     * 
+     *
      * @return a  `tf.Tensor[]` constaining `[filtredBoxes, filtredScores, filtredClasses]`
-     * 
+     *
      * normaly this would be inside a tf.tidy
      * so i skipped on the memory managment
      */
@@ -316,9 +316,9 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
 
       // this is somewhat a replacment for tf.boolean_mask
       const indicesTensor = tf.linspace(0, boxes.shape[0] - 1, boxes.shape[0]).toInt();
-      const negativeIndicesTensor = tf.fill([boxes.shape[0]], -1, "int32");
+      const negativeIndicesTensor = tf.fill([boxes.shape[0]], -1, 'int32');
       const indices = tf.where(filterMask, indicesTensor, negativeIndicesTensor);
-      const filteredIndicesTensor = tf.tensor1d(indices.dataSync<'int32'> ().filter(i => i >= 0));
+      const filteredIndicesTensor = tf.tensor1d(indices.dataSync<'int32'> ().filter((i) => i >= 0));
       return [boxes.gather(filteredIndicesTensor), boxScore.gather(filteredIndicesTensor), boxClasses.gather(filteredIndicesTensor)];
     }
 
@@ -327,9 +327,9 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      * @param boxes a 2D box `tf.Tensor` with the shape of `[numBoxes,4]`
      * @param scores a 2D scores  `tf.Tensor`  with the shape of `[numBoxes,labelsLength]`
      * @param classProbThresh  a number indecating the score threshold defaults to .5
-     * 
+     *
      * @return a  `tf.Tensor[]` constaining `[filtredBoxes, filtredScores, filtredClasses]`
-     * 
+     *
      * this is gooing to be called outside tf.tidy so we need to do memory managment manually
      * the input & output tensors will be clean outside so we should cleaned only the local variables
      */
@@ -343,28 +343,28 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       // https://js.tensorflow.org/api/latest/#setdiff1dAsync
       const range = tf.linspace(0, boxes.shape[0] - 1, boxes.shape[0]);
       const indicesTensor = range.toInt();
-      const negativeIndicesTensor = tf.fill([boxes.shape[0]], -1, "int32");
+      const negativeIndicesTensor = tf.fill([boxes.shape[0]], -1, 'int32');
       const indices = tf.where(filterMask, indicesTensor, negativeIndicesTensor);
-      const filteredIndicesTensor = tf.tensor1d((await indices.data<'int32'>()).filter(i => i >= 0));
+      const filteredIndicesTensor = tf.tensor1d((await indices.data<'int32'>()).filter((i) => i >= 0));
       //  END
       const filtredBoxes = boxes.gather(filteredIndicesTensor);
       const filtredScores = boxScore.gather(filteredIndicesTensor);
       const filtredClasses = boxClasses.gather(filteredIndicesTensor);
 
-      tf.dispose([boxScore,boxClasses,filterThresh, filterMask,
-                  range, indicesTensor, negativeIndicesTensor, 
-                  indices, filteredIndicesTensor,]);
+      tf.dispose([boxScore, boxClasses, filterThresh, filterMask,
+                  range, indicesTensor, negativeIndicesTensor,
+                  indices, filteredIndicesTensor]);
 
       return [filtredBoxes, filtredScores, filtredClasses];
     }
-    
+
     /**
-     * 
-     * @param scores 
-     * @param numBoxes 
-     * @param numClasses 
+     *
+     * @param scores
+     * @param numBoxes
+     * @param numClasses
      */
-    private getMaxScoresAndClasses(scores:Float32Array, numBoxes:number, numClasses:number):[number[], number[]]{
+    private getMaxScoresAndClasses(scores: Float32Array, numBoxes: number, numClasses: number): [number[], number[]] {
       const maxes = [];
       const classes = [];
       for (let i = 0; i < numBoxes; i++) {
@@ -382,28 +382,28 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       return [maxes, classes];
     }
 
-    /** 
+    /**
      * a small utility check to see if `toBeDetermined` is a `tf.Tensor` or a `tf.Tensor[]`
-     * 
+     *
      * @param  toBeDetermined `tf.Tensor` || `tf.Tensor[]`
-     * 
+     *
      * @returns a `boolean` indicating if it's a `tf.Tensor` or a `tf.Tensor[]`
      */
     private isTensorOrTensorArray(toBeDetermined: tf.Tensor | tf.Tensor[]): toBeDetermined is tf.Tensor {
       return (toBeDetermined as tf.Tensor).shape ? true : false;
     }
 
-    /** 
+    /**
      * Implements Non-max Suppression
-     * 
+     *
      * @param boxArr an array containing the boxes coords:Length must be `numBoxes*4`
      * @param scoreArr an array  containing the boxes scores probability:Length must be `numBoxes`
      * @param classesArr an array  containing the detection label index:Length must be `numBoxes`
      * @param iou_thresh  Non-max Suppression Threshold
-     * 
-     * @return RawDetection 
+     *
+     * @return RawDetection
      */
-    private NonMaxSuppression(boxArr:Float32Array, scoreArr:Float32Array, classesArr:Int32Array,iouThresh:number): any[] {
+    private NonMaxSuppression(boxArr: Float32Array, scoreArr: Float32Array, classesArr: Int32Array, iouThresh: number): any[] {
       const zipped: any[] = [];
       for (let i = 0; i < scoreArr.length; i += 1) {
         zipped.push([
@@ -413,7 +413,7 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
         ]);
       }
       // Sort by descending order of scores (first index of zipped array)
-      const sorted = zipped.sort((a, b) =>b[1]-a[1]);
+      const sorted = zipped.sort((a, b) => b[1] - a[1]);
       const out = [];
       // Greedily go through boxes in descending score order and only
       // return boxes that are below the IoU threshold.
@@ -433,12 +433,12 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       return out;
     }
 
-    /** 
+    /**
      * Implement the intersection over union (IoU) between box1 and box2
-     * 
+     *
      * @param box1 -- first box, number list with coordinates `(x1, y1, x2, y2)`
      * @param box2 -- second box, number list with coordinates `(x1, y1, x2, y2)`
-     * 
+     *
      * @return the value of `interarea` /  `unionarea`
      */
     private iou(box1: number[], box2: number[]): number {
@@ -456,13 +456,13 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
        return interarea / unionarea;
     }
 
-    /** 
+    /**
      * a function similar to `createDetectionArray()` that takes the yolo output and returns a `Detection[]`
      * @param boxes  a Float32Array containing the boxes coords:Length must be `numBoxes*4`
      * @param scores an array containing the boxes scores probability:Length must be `numBoxes`
      * @param classes an array  containing the detection label index:Length must be `numBoxes`
      * @param indexes a Float32Array containing the indexes of the boxes that we want to keep:Length must be `numBoxes`
-     * 
+     *
      * @return a `Detection[]` with the final collected boxes
      */
     private createFinalBoxes(boxes: Float32Array, scores: number[], classes: number[], indexes: Int32Array): Detection[] {
@@ -477,8 +477,8 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
         const maxX = bbox[1];
         const minY = bbox[2];
         const minX = bbox[3];
-        const w = minX -maxX ;
-        const h = minY- maxY ;
+        const w = minX - maxX ;
+        const h = minY - maxY ;
         // const x = maxX + (w / 2);
         // const y = maxY - (h / 2);
         const classIndex = classes[indexes[i]];
@@ -498,40 +498,40 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
 
     /**
      * The final phase in the post processing that outputs the final `Detection[]`
-     * 
+     *
      * @param finalBoxes an array containing the raw box information
-     * 
+     *
      * @return a `Detection[]` with the final collected boxes
      */
-    private createDetectionArray(finalBoxes:any[]):Detection[] {
-      const detections:Detection[] = [];
+    private createDetectionArray(finalBoxes: any[]): Detection[] {
+      const detections: Detection[] = [];
       for (let i = 0; i < finalBoxes.length; i += 1) {
-        // add any out put you want 
-        // choose output format 
+        // add any out put you want
+        // choose output format
         // currently its x1,y1,x2,y2
         // x1 = x - (w/2)
         // y1 = y - (h/2)
         // x2 = x + (w/2)
         // y2 = y + (h/2)
-        // as for x y w h 
+        // as for x y w h
         // Warning !  x and y are for the center of the bounding box
-        // w = x2-x1 
+        // w = x2-x1
         // h = y2-y1
-        // x = x1 + (w/2) || x2 - (w/2) 
+        // x = x1 + (w/2) || x2 - (w/2)
         // y = y1 - (h/2) || y2 + (h/2)
-        const [maxY, maxX, minY, minX] =finalBoxes[i][0];
+        const [maxY, maxX, minY, minX] = finalBoxes[i][0];
         const classIndex = finalBoxes[i][2];
         // // Warning !  x and y are for the center of the bounding box
         // const w = minX - maxX;
         // const h = minY - maxY;
-        const detection:Detection = {
-          labelIndex:classIndex,
-          label:this.labels[classIndex],
+        const detection: Detection = {
+          labelIndex: classIndex,
+          label: this.labels[classIndex],
           score: finalBoxes[i][1],
-          x:maxX,
-          y:maxY,
-          w:minX - maxX,
-          h:minY - maxY,
+          x: maxX,
+          y: maxY,
+          w: minX - maxX,
+          h: minY - maxY,
         };
         detections.push(detection);
       }

@@ -4,7 +4,7 @@
     "module": "commonjs",
     "noImplicitAny": false,
     "sourceMap": true,
-    "removeComments": true,
+    "removeComments": false,
     "preserveConstEnums": true,
     "declaration": true,
     "target": "es5",
@@ -29,6 +29,7 @@
     "src/**/*"
   ],
   "exclude": [
+    "demos/",
     "dist/",
     "src/**/*_test.ts"
   ]
