@@ -1,0 +1,22 @@
+<div class="classifier-wrapper">
+  <div class="image-wrapper">
+    <div class="pic-wrap">
+      <img id="classification-image" class="img-class shadow" src="assets/img/bird.jpg">
+    </div>
+    <div class="image-picker border-bottom border-secondary">
+      <div class="image-gallery">
+        <img *ngFor="let img of images" [ngClass]="{'sample-image-active': selectedImageIndex === img.id}" src="{{img.src}}" alt="{{img.name}}" class="sample-image" (click)="changeSelectedImage(img.id)">
+      </div>
+      <label class="btn btn-outline-primary" for="my-file-selector">
+        <input id="my-file-selector"  #imageInput (change)="readURL(imageInput)" type="file" accept="image/png, image/jpeg" style="display:none;">
+        Select an image
+      </label>
+    </div>
+  </div>
+  <div class="controls-wrapper">
+    <div class="controls-wrapper-buttons border-bottom border-secondary ">
+        <button id="ClassifyBtn" (click)="classifiy()" class="btn btn-outline-secondary custom-btn">Classify</button>
+        <button id="loadBtn" (click)="loadModel()" class="btn btn-primary">Load</button>
+    </div>
+  </div>
+</div>

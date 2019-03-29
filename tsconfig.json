@@ -8,11 +8,8 @@
     "preserveConstEnums": true,
     "declaration": true,
     "target": "es5",
-    "lib": [
-      "es2015",
-      "dom"
-    ],
-
+    "lib": ["es2017", "es7", "es6", "dom"],
+    "esModuleInterop": true,
     "outDir": "./lib",  
     "moduleResolution": "node",
     "noUnusedLocals": true,
