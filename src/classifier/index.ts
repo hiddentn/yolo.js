@@ -1,8 +1,3 @@
-import { darknet19Config, darknetRefrenceConfig, tinydarknetConfig  } from './config';
-import { DarknetClassifier } from './darknet';
-export {
-    darknetRefrenceConfig,
-    darknet19Config,
-    tinydarknetConfig,
-    DarknetClassifier,
-  };
+export * from './config';
+export * from './darknet';
+export * from './classifier';

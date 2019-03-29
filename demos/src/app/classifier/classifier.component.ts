@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as YOLO from '@hiddentn/yolo.js';
 @Component({
   selector: 'app-classifier',
   templateUrl: './classifier.component.html',
@@ -11,6 +12,7 @@ export class ClassifierComponent implements OnInit {
   public selectedImageIndex: number;
   public imageToClassifiy: HTMLImageElement;
   public modelName:string;
+  public classifier:any;
 
   constructor( private router: Router, private route: ActivatedRoute) {
     this.images = [];
@@ -21,13 +23,15 @@ export class ClassifierComponent implements OnInit {
     this.images.push({id: 4, src: 'assets/img/dog.jpg', name: 'dog' });
     this.images.push({id: 5, src: 'assets/img/eagle.jpg', name: 'eagle' });
     this.images.push({id: 6, src: 'assets/img/horses.jpg', name: 'horses' });
-
   }
 
   public ngOnInit() {
     this.route.url.subscribe((url) => {
       const classifierName = this.route.snapshot.paramMap.get('name');
-      if(modelName)
+      if(this.modelName === this.classifier)
+      {
+
+      }
     });
     this.imageToClassifiy = document.getElementById('classification-image') as HTMLImageElement;
     this.selectedImageIndex = 0;
