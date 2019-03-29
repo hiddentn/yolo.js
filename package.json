@@ -1,6 +1,6 @@
 {
   "name": "@hiddentn/yolo.js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "YOLO Object detection in javascript & Nodejs",
   "repository": {
     "type": "git",
