@@ -1,9 +1,9 @@
 <div class="classifier-wrapper">
-  <div class="image-wrapper">
+  <div class="image-wrapper border-right">
     <div class="pic-wrap">
       <img id="classification-image" class="img-class shadow" src="assets/img/bird.jpg">
     </div>
-    <div class="image-picker border-bottom border-secondary">
+    <div class="image-picker ">
       <div class="image-gallery">
         <img *ngFor="let img of images" [ngClass]="{'sample-image-active': selectedImageIndex === img.id}" src="{{img.src}}" alt="{{img.name}}" class="sample-image" (click)="changeSelectedImage(img.id)">
       </div>
@@ -13,10 +13,31 @@
       </label>
     </div>
   </div>
-  <div class="controls-wrapper">
-    <div class="controls-wrapper-buttons border-bottom border-secondary ">
-        <button id="ClassifyBtn" (click)="classifiy()" class="btn btn-outline-secondary custom-btn">Classify</button>
-        <button id="loadBtn" (click)="loadModel()" class="btn btn-primary">Load</button>
+  <div class="controls-wrapper" style="max-width: 400px;">
+    <div class="controls-wrapper-buttons border-secondary ">
+        <button id="ClassifyBtn" (click)="classifiy()" class="btn btn-outline-secondary custom-btn" [disabled] = "isClassifing || !isModelLoaded">
+          <span *ngIf="!isClassifing">Classify</span> 
+          <div *ngIf="isClassifing" class="spinner-border text-success" role="status">
+              <span class="sr-only">Loading...</span>
+          </div>
+        </button>
+        <button id="loadBtn" (click)="loadModel()" class="btn custom-btn" [disabled] = 'isModelLoaded || modelError ' [ngClass]="isReadyToDetect ? 'btn-success' :'btn-primary'" [ngClass]="{'btn-danger': modelError}" >
+            <div *ngIf="isModelLoading" class="spinner-border spinner-border-sm" style="font-size:10px" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <span *ngIf="isModelLoaded">Loaded</span>
+            <span *ngIf="modelError">Error please Try Again</span>
+            <span *ngIf="!isModelLoaded && !isModelLoading">Load</span>
+        </button>
+    </div>
+    <div class="result-panel">
+        <span id="result-text" style="font-size: 15px;" class="text-dark text-justify font-weight-lighter text-monospace"></span>
+    </div>
+    <div class="classifcation-panel">
+        <div *ngFor="let item of classifications;let i = index" class="progress p-bar" style="height:30px;">
+            <div class="progress-bar {{colors[i]}} text-dark" role="progressbar" style="font-size: 15px;padding:10px;" [ngStyle]="{'width': item.scoretext}"  aria-valuemin="0" aria-valuemax="100">{{item.label}}</div>
+            <span style="margin-right:15px;">{{item.scoretext}}</span>
+          </div>
     </div>
   </div>
 </div>

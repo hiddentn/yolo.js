@@ -1,5 +1,5 @@
 <div class="demos-list-wrapper">
-    <div *ngFor="let item of cards" class="card  shadow-sm card-custom" style="width: 20rem;">
+    <a  *ngFor="let item of cards" class="text-dark card shadow-sm card-custom" style="width: 20rem;text-decoration: none;" routerLink="{{item.type}}/{{item.name}}">
         <div class="card-img-top img-wrap">
             <img src="{{item.imgsrc}}" class="card-img-top shadow img" alt="...">
         </div>
@@ -8,7 +8,6 @@
             <p class="badge" [ngClass]="item.type === 'Classifier' ?  'badge-primary' : 'badge-danger' ">
                 {{item.type}}</p>
             <p class="card-text">{{item.description}}</p>
-            <a routerLink="{{item.type}}/{{item.name}}" class="btn btn-outline-primary">Try it out !</a>
         </div>
-    </div>
+    </a>
 </div>

@@ -66,4 +66,25 @@
 }
 .controls-wrapper-buttons{
     width: 300px;
+   
+}
+.controls-wrapper{
+display: flex;
+justify-content: flex-start;
+flex-direction: column;
+align-items: flex-start;
+}
+.result-panel {
+    padding-top: 20px;
+}
+.classifcation-panel{
+    width: 100%;
+    padding-top: 20px;
+}
+.p-bar{
+    transition: all .2s ease-in-out;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

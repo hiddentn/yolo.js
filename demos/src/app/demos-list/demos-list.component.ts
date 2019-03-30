@@ -16,35 +16,35 @@ export class DemosListComponent implements OnInit {
   ngOnInit() {
     this.cards.push({
       title: 'Darknet Tiny',
-      imgsrc: 'assets/img/yolo.jfif',
+      imgsrc: 'assets/img/classifier.jpg',
       description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
       type: 'Classifier',
       name: 'darknet-tiny',
     });
     this.cards.push({
       title: 'Tiny YOLO v2',
-      imgsrc: 'assets/img/yolo.jfif',
+      imgsrc: 'assets/img/detector.jpg',
       description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
       type: 'Detector',
       name: 'tiny-yolo-v2',
     });
     this.cards.push({
       title: 'Darknet Refrence',
-      imgsrc: 'assets/img/yolo.jfif',
+      imgsrc: 'assets/img/classifier2.jpg',
       description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
       type: 'Classifier',
       name: 'darknet-refrence',
     });
     this.cards.push({
       title: 'Tiny YOLO Lite',
-      imgsrc: 'assets/img/yolo.jfif',
+      imgsrc: 'assets/img/detector2.jpg',
       description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
       type: 'Detector',
       name: 'tiny-yolo-lght',
     });
     this.cards.push({
       title: 'Darknet19',
-      imgsrc: 'assets/img/yolo.jfif',
+      imgsrc: 'assets/img/classifier.jpg',
       description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
       type: 'Classifier',
       name: 'darknet-19',
@@ -52,7 +52,7 @@ export class DemosListComponent implements OnInit {
   
     this.cards.push({
       title: 'Tiny YOLO v3',
-      imgsrc: 'assets/img/yolo.jfif',
+      imgsrc: 'assets/img/detector3.jpg',
       description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
       type: 'Detector',
       name: 'tiny-yolo-v3',
@@ -60,7 +60,7 @@ export class DemosListComponent implements OnInit {
  
     this.cards.push({
       title: 'YOLO v3',
-      imgsrc: 'assets/img/yolo.jfif',
+      imgsrc: 'assets/img/detector.jpg',
       description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
       type: 'Detector',
       name: 'yolo-v3',

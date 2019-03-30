@@ -12,7 +12,7 @@ const darknetRefrenceConfig: ClassifierConfig = {
     },
     labels: darknetImagnetLabels,
 };
-const tinydarknetConfig: ClassifierConfig = {
+const darknetTinyConfig: ClassifierConfig = {
     modelName: 'tiny-darknet',
     modelURL: '',
     modelSize: 224,
@@ -37,4 +37,4 @@ const darknet19Config: ClassifierConfig = {
     labels: darknetImagnetLabels,
 };
 
-export {darknetRefrenceConfig, darknet19Config, tinydarknetConfig  };
+export { darknetRefrenceConfig, darknet19Config, darknetTinyConfig  };
