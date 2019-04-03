@@ -6,10 +6,10 @@ class DetectionLoop {
         this.IS_PAGE_VISIBLE = true;
         this.IS_TRACK_STOPED = true;
 
-        this.detector = YOLO.Detector({
-            ...YOLO.tinyYOLOv2Config,
-            modelSize: 416,
-            modelURL:'/models/ObjectDetection/yolov2-tiny/model.json',
+        this.detector = new  YOLO.YOLODetector({
+            ...YOLO.tinyYOLOLiteConfig,
+            modelSize: 224,
+            modelURL:'/models/ObjectDetection/yolov2-lite/model.json',
         });
         this.StatMonitor = StatMonitor;
         this.videoSource = videoSource;
@@ -119,14 +119,15 @@ class DetectionLoop {
                 this.vidloop = setInterval(
                     async () => {
                         try {
-                            await tf.nextFrame();
+                            await tf.nextFrame()
                             this.ctx.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
                             if (!(this.videoSource.paused || this.videoSource.ended || this.videoSource.seeking || this.videoSource.readyState < this.videoSource.HAVE_FUTURE_DATA) &&
                                 this.READY_TO_DETECT &&
                                 this.MEDIA_READY_TO_DETECT &&
                                 this.IS_PAGE_VISIBLE) {
                                 this.StatMonitor.begin();
-                                let results = this.detector.detect(this.videoSource);
+                                let results = this.detector.detectSync(this.videoSource);
+                                console.log(results)
                                 this.detector.draw(results,this.outputCanvas);
                                 this.StatMonitor.end();
                             }

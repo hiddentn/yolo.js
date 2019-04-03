@@ -5,20 +5,17 @@
     top: 0;
     left: 0;
     display: grid;
-    grid-template-rows: auto auto;
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     overflow-y: scroll;
 }
 
 .app-header-wrap{
-    grid-row: 1/2;
     z-index: 11;
     transition: all .5s ease-in-out;
 
 }
 
 .app-body-wrap{
-    grid-row: 2/3;
     z-index: 10;
-    transition: all .5s ease-in-out;
 }

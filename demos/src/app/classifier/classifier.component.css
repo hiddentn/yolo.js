@@ -1,27 +1,64 @@
 .classifier-wrapper{
-    height: 100%;
+    display: grid;
+   
+}
+.image-wrapper{
+    display: grid;
+    grid-template-rows: 500px auto;
+
+}
+.image-main{
+    grid-row: 1/2;
+    width:100%;
+    height:100%;
     display: flex;
-    justify-content: flex-start;
-    flex-direction: row;
-    margin: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color:rgb(37, 94, 245);
+    background-image:
+      linear-gradient(rgba(255,255,255,.5) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255,255,255,.5) 2px, transparent 2px),
+      linear-gradient(rgba(255,255,255,.28) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+.image-gallery{
+    padding: 10px;
+    grid-row: 2/3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
 }
 .controls-wrapper{
-    margin: 20px;
+    display: grid;
+    grid-template-rows: 70px 1fr;
+}
+.controls-buttons-panel{
+    grid-row:1/2;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+}
+.controls-result-panel{
+    grid-row: 2/3;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-
 }
-.image-wrapper{
-    height: 550px;
-    width: 853px;
-    margin: 20px;
-    display: grid;
-    grid-template-rows: 480px 70px;
-    grid-row-gap: 10px;
-
+.text-result-panel{
+    padding: 10px 5px;
+}
+.classifcation-result-panel{
+    padding: 10px 5px;
+    width: 100%;
 }
 .pic-wrap{
     display: flex;
@@ -33,29 +70,13 @@
     max-width: 100%;
     transition: all .2s ease-in-out;
 }
-.image-picker{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 10px;
-}
-.image-gallery{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-}
 .sample-image{
     width: 60px;
     height: 50px;
     margin: 0 5px;
     transition: all .2s ease-in-out;
-
 }
 .sample-image-active{
-    border-left: 3px solid var(--primary);
-    margin: 0 5px 0 2px;
     transform: scale(1.2); 
 }
 .sample-image:hover {
@@ -64,23 +85,7 @@
 .custom-btn{
     margin: 5px 10px;
 }
-.controls-wrapper-buttons{
-    width: 300px;
-   
-}
-.controls-wrapper{
-display: flex;
-justify-content: flex-start;
-flex-direction: column;
-align-items: flex-start;
-}
-.result-panel {
-    padding-top: 20px;
-}
-.classifcation-panel{
-    width: 100%;
-    padding-top: 20px;
-}
+
 .p-bar{
     transition: all .2s ease-in-out;
     margin: 5px 0;
@@ -88,3 +93,40 @@ align-items: flex-start;
     justify-content: space-between;
     align-items: center;
 }
+/* // Extra small devices (portrait phones, less than 576px)
+// No media query since this is the default in Bootstrap
+
+// Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .classifier-wrapper {
+        grid-template-columns: 1fr;
+        grid-template-rows:  auto auto;
+    }
+    .image-wrapper {
+        grid-column: 1/2;
+        grid-row: 1/2;
+
+    }
+    .controls-wrapper{
+        grid-column: 1/2;
+        grid-row: 2/3;
+    }
+ }
+
+/* // Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+    .classifier-wrapper {
+        grid-template-columns: auto 853px 400px auto;
+        grid-template-rows: auto 600px auto;
+    }
+    .image-wrapper {
+        grid-column: 2/3;
+        grid-row: 2/3;
+    }
+    .controls-wrapper{
+        margin-left: 50px;
+        grid-column: 3/4;
+        grid-row: 2/3;
+    }
+
+ }
