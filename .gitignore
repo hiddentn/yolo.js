@@ -10,7 +10,7 @@ lib
 lib-esm
 _bundles
 models
-
+dist
 # Runtime data
 pids
 *.pid
