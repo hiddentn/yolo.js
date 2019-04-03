@@ -34,6 +34,27 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       this.resizeOption = options.resizeOption;
     }
 
+       /**
+   * Loads the model from `modelURL`
+   */
+  public async loadFromDisk(handler:any): Promise<boolean> {
+    if (tf == null) {
+      throw new Error(
+          'Cannot find TensorFlow.js. If you are using a <script> tag, please ' +
+          'also include @tensorflow/tfjs on the page before using this model.');
+    }
+    try {
+      if (handler) {
+        this.model = await tf.loadLayersModel(handler);
+      }
+      else {
+        this.model = await tf.loadLayersModel(this.modelURL);
+      }
+      return true;
+    } catch (e) {
+      return e;
+    }
+  }
     /**
      * Loads the model from `modelURL`
      */

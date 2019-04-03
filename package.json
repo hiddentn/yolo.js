@@ -54,5 +54,8 @@
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1",
     "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^1.0.3"
   }
 }
