@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node';
 import { ImageOptions, Input, modelSize} from '../types';
 
 /**
@@ -13,7 +13,7 @@ import { ImageOptions, Input, modelSize} from '../types';
  *          original image Height as a `number`
  *          a 4D tensor with the shape of `[1,size,size,3]`
  */
-export function preProcess(input: Input, size: modelSize, options: ImageOptions): [number, number, tf.Tensor<tf.Rank.R4>] {
+export function preProcess(input: Input, size: modelSize, options: ImageOptions): [number, number, tf.Tensor<tf.Rank>] {
   return tf.tidy('preprocessing the yolo/darknet CNN', () => {
     let image: tf.Tensor;
     if (input instanceof tf.Tensor) {

@@ -39,10 +39,10 @@
   "author": "TheHidden1",
   "license": "MIT",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^1.0.0"
+    "@tensorflow/tfjs": "^1.0.2"
   },
   "devDependencies": {
-    "@tensorflow/tfjs": "^1.0.0",
+    "@tensorflow/tfjs": "^1.0.2",
     "@types/node": "^11.12.0",
     "awesome-typescript-loader": "^5.2.1",
     "rimraf": "2.6.2",
@@ -54,8 +54,5 @@
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1",
     "webpack-merge": "^4.2.1"
-  },
-  "dependencies": {
-    "@tensorflow/tfjs-node": "^1.0.3"
   }
 }

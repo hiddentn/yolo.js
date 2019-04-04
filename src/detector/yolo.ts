@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node';
 import { Detection , ImageOptions, Input , modelSize , YOLOVersion} from '../types';
 import { draw } from '../utils/draw';
 import { preProcess  } from '../utils/preProcess' ;

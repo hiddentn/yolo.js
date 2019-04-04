@@ -1,4 +1,4 @@
-import { Tensor } from '@tensorflow/tfjs';
+import { Tensor } from '@tensorflow/tfjs-node';
 
 type  Input = HTMLCanvasElement | HTMLVideoElement | ImageData | HTMLImageElement | Tensor;
 type  YOLOVersion = 'v2' | 'v3';

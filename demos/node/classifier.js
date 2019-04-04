@@ -5,6 +5,7 @@ const now = require("performance-now")
 const tf = require('@tensorflow/tfjs-node');
 const YOLO = require('@hiddentn/yolo.js');
 
+console.log(tf.getBackend())
 const config = {
     ...YOLO.darknetTinyConfig,
     modelURL: '../../models/classifiers/darknet-tiny/model.json'

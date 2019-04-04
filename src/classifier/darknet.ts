@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node';
 import { Classification, ImageOptions, Input, modelSize } from '../types';
 import { preProcess } from '../utils/preProcess';
 import { Classifier, ClassifierConfig } from './classifier';
