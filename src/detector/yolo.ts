@@ -33,28 +33,6 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       this.masks = options.masks;
       this.resizeOption = options.resizeOption;
     }
-
-       /**
-   * Loads the model from `modelURL`
-   */
-  public async loadFromDisk(handler:any): Promise<boolean> {
-    if (tf == null) {
-      throw new Error(
-          'Cannot find TensorFlow.js. If you are using a <script> tag, please ' +
-          'also include @tensorflow/tfjs on the page before using this model.');
-    }
-    try {
-      if (handler) {
-        this.model = await tf.loadLayersModel(handler);
-      }
-      else {
-        this.model = await tf.loadLayersModel(this.modelURL);
-      }
-      return true;
-    } catch (e) {
-      return e;
-    }
-  }
     /**
      * Loads the model from `modelURL`
      */
@@ -74,9 +52,9 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
     /**
      * Caches the model
      */
-    public cache(): void {
+    public async cache(): Promise<void> {
       const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
-      this.detectSync(dummy);
+      await this.detect(dummy);
       tf.dispose(dummy);
     }
 

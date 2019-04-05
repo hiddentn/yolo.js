@@ -15,9 +15,10 @@
   "scripts": {
     "clean:browser": "rimraf dist",
     "clean:node": "rimraf lib",
+    "clean:all": "rimraf lib dist",
     "start:browser": "webpack-dev-server --open --config webpack.dev.js",
-    "build:browser": "npm run clean:browser && webpack --config webpack.prod.js",
-    "build:node": "tsc",
+    "build:browser": "npm run clean:browser && npm run lint && webpack --config webpack.prod.js",
+    "build:node": "npm run clean:node &&  npm run lint && tsc",
     "lint": "tslint -p . -t verbose",
     "prepublishOnly": "npm run clean:node && npm run lint && npm run build:node",
     "preversion": "npm run lint",
@@ -54,8 +55,5 @@
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1",
     "webpack-merge": "^4.2.1"
-  },
-  "dependencies": {
-    "@tensorflow/tfjs-node": "^1.0.3"
   }
 }
