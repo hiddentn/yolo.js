@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import * as YOLO from '@hiddentn/yolo.js';
-import * as tf from '@tensorflow/tfjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { YOLODetector } from '@hiddentn/yolo.js';
 import * as dat from 'dat.gui';
 import ResizeObserver from 'resize-observer-polyfill';
+import { ModelsService } from '../models.service';
 import { Stats } from '../stats';
 import { setCameraToVideoElement } from '../utils';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-detector',
@@ -25,13 +25,13 @@ export class DetectorComponent implements OnInit {
           ideal: 1080,
       },
     },
-  }
+  };
   public modelName: string;
 
   public videoSource: HTMLVideoElement;
 
   public outputCanvas: HTMLCanvasElement;
-  public context : CanvasRenderingContext2D;
+  public context: CanvasRenderingContext2D;
   public videoWrapper: HTMLDivElement;
   public perfLayer: HTMLDivElement;
   public controlPanel: HTMLDivElement;
@@ -43,8 +43,8 @@ export class DetectorComponent implements OnInit {
   public isTrackStopped: boolean;
   public readyToDetect: boolean;
 
-  public detector: YOLO.YOLODetector;
-  public isModelLoded : boolean
+  public detector: YOLODetector;
+  public isModelLoded: boolean;
   public MaxDetections: number;
   public MaxframeRate: number;
 
@@ -53,40 +53,17 @@ export class DetectorComponent implements OnInit {
   public perfMeter: Stats;
   public controlsGUI: dat.GUI;
 
-
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute, private models: ModelsService) {}
 
   public ngOnInit() {
     this.route.url.subscribe(() => {
-      window.scrollTo(0, 0);
       const detectorName = this.route.snapshot.paramMap.get('name');
       this.readyToDetect = false;
       this.isModelLoded = false;
       if (this.modelName !== detectorName) {
         this.modelName = detectorName;
-        let config: YOLO.YOLODetectorConfig;
-        if (detectorName === 'tiny-yolo-v2') {
-          config = {
-            ...YOLO.tinyYOLOv2Config,
-            modelURL: 'assets/models/objectdetection/yolov2-tiny/model.json',
-          };
-        } else if (detectorName === 'tiny-yolo-v3') {
-          config = {
-            ...YOLO.tinyYOLOv3Config,
-            modelURL: 'assets/models/objectdetection/yolov3-tiny/model.json',
-          };
-        } else if (detectorName === 'tiny-yolo-v2-lite') {
-          config = {
-            ...YOLO.tinyYOLOLiteConfig,
-            modelURL: 'assets/models/objectdetection/yolov2-lite/model.json',
-          };
-        } else if (detectorName === 'yolo-v3') {
-          config = {
-            ...YOLO.yolov3Config,
-            modelURL: 'assets/models/objectdetection/yolov3/model.json',
-          };
-        }
-        this.detector = new YOLO.YOLODetector(config);
+        const config = this.models.getDetectorConfig(this.modelName);
+        this.detector = new YOLODetector(config);
 
       } else {
         this.readyToDetect = true;
@@ -140,7 +117,7 @@ export class DetectorComponent implements OnInit {
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'F11') {
-        e.preventDefault()
+        e.preventDefault();
         this.videoWrapper.requestFullscreen();
       }
     });
@@ -173,56 +150,54 @@ export class DetectorComponent implements OnInit {
     this.controlPanel.appendChild(this.controlsGUI.domElement);
   }
 
-  async loadModel() {
-    this.detector.load().then(()=>{
+  public async loadModel() {
+    this.detector.load().then(() => {
       console.log('loaded');
       this.isModelLoded = true;
-      this.detector.cache().then(()=>{
+      this.detector.cache().then(() => {
         this.readyToDetect = true;
         console.log('ready');
 
-      })
-    })
+      });
+    });
   }
 
-  startDetection() {
+  public startDetection() {
     if (this.readyToDetect) {
       if (!this.detectionLoop) {
-          console.log('added detection loop')
+          console.log('added detection loop');
           this.detectionLoop = setInterval(
               async () => {
                   try {
-                      await tf.nextFrame()
                       this.context.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
                       if (!(this.videoSource.paused || this.videoSource.ended || this.videoSource.seeking || this.videoSource.readyState < this.videoSource.HAVE_FUTURE_DATA) &&
                           this.readyToDetect &&
                           !this.isTrackStopped &&
                           this.isPageVisible) {
                           this.perfMeter.begin();
-                          let results = await  this.detector.detectSync(this.videoSource);
+                          const results = await  this.detector.detectSync(this.videoSource);
                           console.log(results);
                           this.detector.draw(results, this.outputCanvas);
                           this.perfMeter.end();
                       }
                   } catch (e) {
-                      console.error(e)
+                      console.error(e);
                   }
-              }, this.MaxframeRate)
+              }, this.MaxframeRate);
       }
 
   } else {
-      window.alert("Please Load the Model first")
+      window.alert('Please Load the Model first');
   }
+  
   }
-  stopDetection() {
-    console.log('removed detection loop')
+  public stopDetection() {
+    console.log('removed detection loop');
     this.context.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
     clearInterval(this.detectionLoop);
     this.detectionLoop = null;
   }
-  SetMaxFrameRate() {}
-
-
+  public SetMaxFrameRate() {}
 
   public stopVideoTrack() {
     const stream = this.videoSource.srcObject as MediaStream;

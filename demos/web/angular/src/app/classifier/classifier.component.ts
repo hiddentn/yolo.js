@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as YOLO from '@hiddentn/yolo.js';
+import { DarknetClassifier } from '@hiddentn/yolo.js';
+import { ModelsService } from '../models.service';
 @Component({
   selector: 'app-classifier',
   templateUrl: './classifier.component.html',
@@ -27,7 +28,6 @@ export class ClassifierComponent implements OnInit {
 
   public classifications: any[];
 
-  public resultText: HTMLElement;
 
   public modelError: boolean;
   public isModelLoading: boolean;
@@ -36,16 +36,12 @@ export class ClassifierComponent implements OnInit {
   public isClassifing: boolean;
   public classificationExists: boolean;
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(private router: Router, private route: ActivatedRoute, private models: ModelsService) {
     this.images = [];
     this.images.push({ id: 0, src: 'assets/img/bird.jpg', name: 'bird' });
     this.images.push({ id: 1, src: 'assets/img/cat.jpg', name: 'cat' });
     this.images.push({ id: 2, src: 'assets/img/cat2.png', name: 'cat2' });
-    this.images.push({
-      id: 3,
-      src: 'assets/img/citron-jardin.jpg',
-      name: 'citron',
-    });
+    this.images.push({ id: 3, src: 'assets/img/citron-jardin.jpg', name: 'citron'});
     this.images.push({ id: 4, src: 'assets/img/dog.jpg', name: 'dog' });
     this.images.push({ id: 5, src: 'assets/img/eagle.jpg', name: 'eagle' });
     this.images.push({ id: 6, src: 'assets/img/horses.jpg', name: 'horses' });
@@ -61,7 +57,6 @@ export class ClassifierComponent implements OnInit {
 
   public ngOnInit() {
     this.route.url.subscribe(() => {
-      window.scrollTo(0, 0);
       const classifierName = this.route.snapshot.paramMap.get('name');
       this.isReadyToDetect = false;
       this.isModelLoaded = false;
@@ -69,40 +64,14 @@ export class ClassifierComponent implements OnInit {
       this.classificationExists = false;
       if (this.modelName !== classifierName) {
         this.modelName = classifierName;
-        let config: YOLO.ClassifierConfig;
-        if (classifierName === 'darknet-tiny') {
-          config = {
-            ...YOLO.darknetTinyConfig,
-            modelURL: 'assets/models/classifiers/darknet-tiny/model.json',
-          };
-        } else if (classifierName === 'darknet-refrence') {
-          config = {
-            ...YOLO.darknetRefrenceConfig,
-            modelURL: 'assets/models/classifiers/darknet-reference/model.json',
-          };
-        } else if (classifierName === 'darknet-19') {
-          config = {
-            ...YOLO.darknet19Config,
-            modelURL: 'assets/models/classifiers/darknet-19/model.json',
-          };
-        } else if (classifierName === 'darknet-9000') {
-          config = {
-            ...YOLO.darknetRefrenceConfig,
-            modelURL: 'assets/models/classifiers/darknet-9000/model.json',
-          };
-        } else {
-          // jus to make load disappera
-          this.isModelLoading = true;
-          this.modelError = true;
-        }
-        this.classifier = new YOLO.DarknetClassifier(config);
+        let config = this.models.getClassifierConfig(this.modelName);
+        this.classifier = new DarknetClassifier(config);
       } else {
         this.isReadyToDetect = true;
         this.isModelLoaded = true;
       }
     });
     this.imageToClassifiy = document.getElementById('classification-image') as HTMLImageElement;
-    this.resultText = document.getElementById('result-text');
     this.selectedImageIndex = 0;
     this.imageToClassifiy.src = this.images[0].src;
   }
