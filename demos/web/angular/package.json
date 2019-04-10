@@ -1,13 +1,10 @@
 {
   "name": "yolodemoapp",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "build": "ng build --prod --build-optimizer"
   },
   "private": true,
   "dependencies": {
@@ -20,12 +17,15 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "@tensorflow/tfjs": "^1.0.2",
-    "@types/dat.gui": "^0.7.2",
+    "bootstrap": "^4.3.1",
     "core-js": "^2.5.4",
     "dat.gui": "^0.7.6",
+    "jquery": "^3.4.0",
+    "popper.js": "^1.15.0",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
@@ -33,9 +33,9 @@
     "@angular/compiler-cli": "~7.2.0",
     "@angular/language-service": "~7.2.0",
     "@types/node": "~8.9.4",
-    "resize-observer-polyfill": "^1.5.1",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.2.2"
+    "typescript": "~3.2.2",
+    "@types/dat.gui": "^0.7.2"
   }
 }

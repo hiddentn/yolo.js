@@ -65,7 +65,7 @@
 
   "linterOptions": {
     "exclude": [
-      "demos/*"
+      "demos/**/*"
     ]
   }
 }

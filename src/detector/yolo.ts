@@ -45,17 +45,21 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       try {
         this.model = await tf.loadLayersModel(this.modelURL);
         return true;
-      } catch (e) {
-        return false;
+      } catch (error) {
+        throw error;
       }
     }
     /**
      * Caches the model
      */
     public async cache(): Promise<void> {
-      const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
-      await this.detect(dummy);
-      tf.dispose(dummy);
+      try {
+        const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
+        await this.detect(dummy);
+        tf.dispose(dummy);
+      } catch (error) {
+        throw error;
+      }
     }
 
     /**

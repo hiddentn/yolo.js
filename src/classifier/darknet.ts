@@ -36,17 +36,21 @@ export class DarknetClassifier implements Classifier, ClassifierConfig {
     try {
       this.model = await tf.loadLayersModel(this.modelURL);
       return true;
-    } catch (e) {
-      return e;
+    } catch (error) {
+      throw error;
     }
   }
   /**
    * Caches the model
    */
   public async cache(): Promise<void> {
-    const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
-    await this.classify(dummy);
-    tf.dispose(dummy);
+    try {
+      const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
+      await this.classify(dummy);
+      tf.dispose(dummy);
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**

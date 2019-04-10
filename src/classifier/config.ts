@@ -1,3 +1,4 @@
+import { darknet9000Labels } from '../shared/darknet9000_labels';
 import { darknetImagnetLabels } from '../shared/darknet_imagenet_labels';
 import { ClassifierConfig } from './classifier';
 const darknetRefrenceConfig: ClassifierConfig = {
@@ -36,5 +37,16 @@ const darknet19Config: ClassifierConfig = {
     },
     labels: darknetImagnetLabels,
 };
-
-export { darknetRefrenceConfig, darknet19Config, darknetTinyConfig  };
+const darknet9000Config: ClassifierConfig = {
+    modelName: 'darknet-9000',
+    modelURL: '',
+    modelSize: 416,
+    classProbThreshold: .6,
+    topK: 5,
+    resizeOption: {
+        AlignCorners: true,
+        ResizeOption: 'Bilinear',
+    },
+    labels: darknet9000Labels,
+};
+export { darknetRefrenceConfig, darknet19Config, darknetTinyConfig, darknet9000Config  };

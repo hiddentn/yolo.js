@@ -1,79 +1,77 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DarknetClassifier } from '@hiddentn/yolo.js';
-import { ModelsService } from '../models.service';
+import { ModelsService } from '../Services/models.service';
+import { ErrorService } from '../Services/error.service';
 @Component({
   selector: 'app-classifier',
   templateUrl: './classifier.component.html',
   styleUrls: ['./classifier.component.css'],
 })
-export class ClassifierComponent implements OnInit {
-  public colors = [
-    'bg-primary',
-    'bg-secondary',
-    'bg-success',
-    'bg-danger',
-    'bg-warning',
-    'bg-info',
-    'bg-dark',
-  ];
-  public error: any;
+export class ClassifierComponent implements OnInit , OnDestroy{
 
-  public images: any[];
-  public selectedImageIndex: number;
+  @ViewChild('DetectionImage') imageRef: ElementRef;
+
+
+  public colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark',];
+
+  public classifier: DarknetClassifier;
   public imageToClassifiy: HTMLImageElement;
-  public modelName: string;
-  public classifier: any;
-  public best: any;
 
+  //Sample images
+  public selectedImageIndex: number;
+  public images: any[];
+
+  // misc 
+  public modelName: string;
+  public best: any;
   public classifications: any[];
 
-
-  public modelError: boolean;
+  // state management stuff
   public isModelLoading: boolean;
-  public isReadyToDetect: boolean;
+  public isModelError: boolean;
   public isModelLoaded: boolean;
+
+  public isModelReadyToDetect: boolean;
   public isClassifing: boolean;
   public classificationExists: boolean;
 
-  constructor(private router: Router, private route: ActivatedRoute, private models: ModelsService) {
-    this.images = [];
-    this.images.push({ id: 0, src: 'assets/img/bird.jpg', name: 'bird' });
-    this.images.push({ id: 1, src: 'assets/img/cat.jpg', name: 'cat' });
-    this.images.push({ id: 2, src: 'assets/img/cat2.png', name: 'cat2' });
-    this.images.push({ id: 3, src: 'assets/img/citron-jardin.jpg', name: 'citron'});
-    this.images.push({ id: 4, src: 'assets/img/dog.jpg', name: 'dog' });
-    this.images.push({ id: 5, src: 'assets/img/eagle.jpg', name: 'eagle' });
-    this.images.push({ id: 6, src: 'assets/img/horses.jpg', name: 'horses' });
+  constructor(private route: ActivatedRoute, private modelService: ModelsService, private errService: ErrorService) {
+    this.modelName = '';
 
-    this.modelError = false;
+    this.selectedImageIndex = 0;
+    this.images = [];
+    this.images = this.modelService.getSampleImages()
+
     this.isModelLoading = false;
+    this.isModelError = false;
     this.isModelLoaded = false;
-    this.isReadyToDetect = false;
+
+    this.isModelReadyToDetect = false;
     this.isClassifing = false;
     this.classificationExists = false;
-    this.modelName = '';
   }
 
   public ngOnInit() {
-    this.route.url.subscribe(() => {
-      const classifierName = this.route.snapshot.paramMap.get('name');
-      this.isReadyToDetect = false;
-      this.isModelLoaded = false;
-      this.isModelLoading = false;
-      this.classificationExists = false;
-      if (this.modelName !== classifierName) {
-        this.modelName = classifierName;
-        let config = this.models.getClassifierConfig(this.modelName);
+
+    const classifierName = this.route.snapshot.paramMap.get('name');
+    this.modelName = classifierName;
+    this.isModelReadyToDetect = false;
+    this.isModelLoaded = false;
+    this.isModelLoading = false;
+    this.classificationExists = false;
+      try {
+        let config = this.modelService.getClassifierConfig(this.modelName);
         this.classifier = new DarknetClassifier(config);
-      } else {
-        this.isReadyToDetect = true;
-        this.isModelLoaded = true;
+      } catch (error) {
+        this.errService.setError(error);
       }
-    });
-    this.imageToClassifiy = document.getElementById('classification-image') as HTMLImageElement;
-    this.selectedImageIndex = 0;
-    this.imageToClassifiy.src = this.images[0].src;
+     
+    this.imageToClassifiy = this.imageRef.nativeElement as HTMLImageElement; 
+    this.imageToClassifiy.src = this.images[this.selectedImageIndex].src;
+  }
+  public ngOnDestroy(): void {
+    this.classifier.dispose();   
   }
 
   public changeSelectedImage(imgid: any) {
@@ -95,12 +93,14 @@ export class ClassifierComponent implements OnInit {
   }
 
   public async classifiy() {
-    if (this.isReadyToDetect) {
+    if (this.isModelReadyToDetect) {
       this.isClassifing = true;
       const p1 = performance.now();
-      this.classifier.classify(this.imageToClassifiy).then((classifications) => {
-        const p2 = performance.now();
-        if (classifications && classifications[0]) {
+      this.classifier.classify(this.imageToClassifiy).then(
+        // removing type just to add some new values to the array
+        (classifications: any) => {
+          const p2 = performance.now();
+          if (classifications && classifications[0]) {
           classifications.forEach((item) => {
             item.score = (item.score * 100).toFixed(2);
             item.scoretext = `${item.score}%`;
@@ -111,21 +111,35 @@ export class ClassifierComponent implements OnInit {
           this.isClassifing = false;
           this.classificationExists = true;
         }
-      });
+      },
+      (err) =>{
+        this.errService.setError(`Error Classifing image : ${err}`);
+      }
+      );
     }
   }
 
-  public loadModel() {
+  public async loadModel() {
     this.isModelLoading = true;
-    this.classifier.load().then((loaded) => {
-      this.isModelLoading = false;
-      this.modelError = !loaded;
-      if (loaded) {
-        this.classifier.cache().then(() => {
-          this.isModelLoaded = true;
-          this.isReadyToDetect = true;
-        });
-      }
-    });
+    this.classifier.load().then(
+      (loaded) => {
+        // model successfully loaded
+        this.isModelLoading = false;
+        this.isModelError = !loaded;
+        if (loaded) {
+          this.classifier.cache().then(
+            () => {
+              this.isModelLoaded = true;
+              this.isModelReadyToDetect = true;
+            },
+            (err) => {
+              this.errService.setError(err)
+            }
+          );
+        }
+      },
+      (err) => {
+        this.errService.setError(err)
+      });
   }
 }

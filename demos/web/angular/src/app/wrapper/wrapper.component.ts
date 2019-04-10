@@ -11,21 +11,20 @@ import { filter } from 'rxjs/operators';
 })
 export class WrapperComponent implements OnInit {
 
+  constructor(private router: Router,private headerService: HeaderService ) {
+  }
 
-  constructor(private router: Router, private route: ActivatedRoute,private headerService: HeaderService ) {
+  ngOnInit() {
     this.router.events.pipe(filter(event => event instanceof NavigationStart))
     .subscribe((event:NavigationStart) => {
-      window.scrollTo(0,0)
       // You only receive NavigationStart events
       if (event.url === "/") {
        this.headerService.expand();
+
       } else {
         this.headerService.collapse();
       }
     });
-  }
-  ngOnInit() {
-    
   }
 
 }

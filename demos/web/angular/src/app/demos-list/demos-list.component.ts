@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderService } from '../Services/header.service';
+import { ModelsService } from '../Services/models.service';
 
 @Component({
   selector: 'app-demos-list',
@@ -9,61 +10,11 @@ import { HeaderService } from '../Services/header.service';
 export class DemosListComponent implements OnInit {
 
   cards: any[];
-  constructor(private headerService: HeaderService) {
+  constructor(private headerService: HeaderService,private modelService: ModelsService) {
     this.cards = [];
   }
 
   ngOnInit() {
-    this.cards.push({
-      title: 'Darknet Tiny',
-      imgsrc: 'assets/img/classifier.jpg',
-      description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      type: 'Classifier',
-      name: 'darknet-tiny',
-    });
-    this.cards.push({
-      title: 'Tiny YOLO v2',
-      imgsrc: 'assets/img/detector.jpg',
-      description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      type: 'Detector',
-      name: 'tiny-yolo-v2',
-    });
-    this.cards.push({
-      title: 'Darknet Refrence',
-      imgsrc: 'assets/img/classifier2.jpg',
-      description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      type: 'Classifier',
-      name: 'darknet-refrence',
-    });
-    this.cards.push({
-      title: 'Tiny YOLO Lite',
-      imgsrc: 'assets/img/detector2.jpg',
-      description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      type: 'Detector',
-      name: 'tiny-yolo-lght',
-    });
-    this.cards.push({
-      title: 'Darknet19',
-      imgsrc: 'assets/img/classifier.jpg',
-      description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      type: 'Classifier',
-      name: 'darknet-19',
-    });
-  
-    this.cards.push({
-      title: 'Tiny YOLO v3',
-      imgsrc: 'assets/img/detector3.jpg',
-      description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      type: 'Detector',
-      name: 'tiny-yolo-v3',
-    });
- 
-    this.cards.push({
-      title: 'YOLO v3',
-      imgsrc: 'assets/img/detector.jpg',
-      description: "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      type: 'Detector',
-      name: 'yolo-v3',
-    });
+    this.cards = this.modelService.getAvailableDemos();
   }
 }
