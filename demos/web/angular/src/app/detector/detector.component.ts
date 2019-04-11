@@ -34,12 +34,17 @@ export class DetectorComponent implements OnInit,OnDestroy {
 	public isPageVisible: boolean;
 	public isMediaTrackStopped: boolean;
 	public isModelreadyToDetect: boolean;
+	public isDetecting: boolean;
+
 
 	public isModelLoded: boolean;
+
+	public isCameraEnabled: boolean;
 
 	// app config
 	public MaxDetections: number;
 	public MaxframeRate: number;
+	public MaxframeRateMs: number
 
 	public detectionLoop: any;
 
@@ -51,6 +56,7 @@ export class DetectorComponent implements OnInit,OnDestroy {
   public cameraconfig:any;
 
 	constructor(private route: ActivatedRoute, private models: ModelsService, private errService: ErrorService) {
+		this.isCameraEnabled = true
     this.mobile = this.isMobile()
     this.cameraconfig = {
       audio: false,
@@ -76,7 +82,12 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		this.isPageVisible = true;
 		this.isMediaTrackStopped = true;
 
+		this.isDetecting = false
+
+
 		this.MaxframeRate = 20;
+		this.MaxframeRateMs = 1000 / this.MaxframeRate
+
 		this.MaxDetections = 20;
 
 		this.videoSource = this.vidSource.nativeElement as HTMLVideoElement;
@@ -116,7 +127,9 @@ export class DetectorComponent implements OnInit,OnDestroy {
 
 		this.perfMeter = new Stats(0);
 		this.perfLayer.nativeElement.appendChild(this.perfMeter.dom);
-		this.initCamera();
+		if (this.isCameraEnabled ) {
+			this.initCamera();
+		}
 		try {
 			const config = this.models.getDetectorConfig(this.modelName);
 			this.detector = new YOLODetector(config);
@@ -134,8 +147,8 @@ export class DetectorComponent implements OnInit,OnDestroy {
 
 	public async loadModel() {
 		this.detector.load().then(
-			(loaded) => {
-				this.isModelLoded = loaded;
+			() => {
+				this.isModelLoded = true;
 				this.detector.cache().then(
 					() => {
 						this.isModelreadyToDetect = true;
@@ -156,22 +169,22 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		if (this.isModelreadyToDetect) {
 			if (!this.detectionLoop) {
 				this.detectionLoop = setInterval(() => {
+					this.isDetecting = true;
 					try {
 						this.context.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
 						if (
 							!(this.videoSource.paused || this.videoSource.ended || this.videoSource.seeking || this.videoSource.readyState < this.videoSource.HAVE_FUTURE_DATA) &&
-							!this.isMediaTrackStopped &&
 							this.isPageVisible
 						) {
 							this.perfMeter.begin();
-							const results = this.detector.detectSync(this.videoSource);
+							const results =  this.detector.detectSync(this.videoSource);
 							this.detector.draw(results, this.outputCanvas);
 							this.perfMeter.end();
 						}
 					} catch (e) {
 						console.error(e);
 					}
-				}, this.MaxframeRate);
+				},this.MaxframeRateMs);
 			}
 		} else {
 			this.errService.setError('Please Load The Model first!');
@@ -182,8 +195,15 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		this.context.clearRect(0, 0, this.outputCanvas.width, this.outputCanvas.height);
 		clearInterval(this.detectionLoop);
 		this.detectionLoop = null;
+		this.isDetecting = false;
 	}
-	public SetMaxFrameRate() {}
+	public SetMaxFrameRate() {
+		this.MaxframeRateMs  = 1000 / this.MaxframeRate;
+		if (this.isDetecting) {
+			this.stopDetection();
+			this.startDetection();
+		}
+	}
 
 	public stopVideoTrack() {
 		const stream = this.videoSource.srcObject as MediaStream;
@@ -198,8 +218,8 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		}
 	}
 	public resumeVideoTrack() {
-		if (!this.videoSource.srcObject) {
-			this.initCamera();
+		if (this.isCameraEnabled && !this.videoSource.srcObject) {
+				this.initCamera();
 		}
 	}
 
@@ -245,7 +265,28 @@ export class DetectorComponent implements OnInit,OnDestroy {
 			this.errService.setError(err);
 		}
   }
-  
+	
+	public playVideoUrl(fromurl) {
+		const val = (fromurl as HTMLInputElement).value
+		if(val === undefined || val == null || val.length <= 0) {
+			this.errService.setError("Please Enter a Valid URL");	
+		} else {
+		this.disableCamea();
+		this.videoSource.src = val;
+		}
+	}
+
+	public disableCamea() {
+		this.isCameraEnabled = false;
+		this.pauseAllMediaStreams();
+		this.stopVideoTrack();
+	}
+	public enableCamera() {
+		if (!this.isCameraEnabled) {
+			this.isCameraEnabled = true;
+			this.resumeVideoTrack();
+		}
+	}
 
   isAndroid() {
     return /Android/i.test(navigator.userAgent);

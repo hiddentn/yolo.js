@@ -1,7 +1,8 @@
 import { cocoLabels } from '../shared/coco_labels';
 import { YOLODetectorConfig } from './detector';
 
-const tinyYOLOv3Config: YOLODetectorConfig  = {
+// tslint:disable: variable-name
+const YOLOV3TinyConfig: YOLODetectorConfig  = {
     modelName: 'tiny-yolo-v3',
     modelURL: '',
     modelSize: 224,
@@ -18,7 +19,7 @@ const tinyYOLOv3Config: YOLODetectorConfig  = {
     masks: [[3, 4, 5], [0, 1, 2]],
 };
 
-const tinyYOLOv2Config: YOLODetectorConfig = {
+const YOLOV2TinyConfig: YOLODetectorConfig = {
     modelName: 'tiny-yolo-v2',
     modelURL: '',
     modelSize: 224,
@@ -35,7 +36,7 @@ const tinyYOLOv2Config: YOLODetectorConfig = {
     anchors: [[0.57273, 0.677385], [1.87446, 2.06253], [3.33843, 5.47434], [7.88282, 3.52778], [9.77052, 9.16828]],
 };
 
-const yolov3Config: YOLODetectorConfig  = {
+const YOLOV3Config: YOLODetectorConfig  = {
     modelName: 'yolo-v3',
     modelURL: '',
     modelSize: 224,
@@ -52,7 +53,7 @@ const yolov3Config: YOLODetectorConfig  = {
     masks: [[6, 7, 8], [3, 4, 5], [0, 1, 2]],
 };
 
-const tinyYOLOLiteConfig: YOLODetectorConfig = {
+const YOLOLiteConfig: YOLODetectorConfig = {
     modelName: 'tiny-yolo-v2-lite',
     modelURL: '',
     modelSize: 224,
@@ -69,4 +70,4 @@ const tinyYOLOLiteConfig: YOLODetectorConfig = {
     anchors: [[1.08, 1.19], [3.42, 4.41], [6.63, 11.38], [9.42, 5.11], [16.62, 10.52]],
 };
 
-export {yolov3Config, tinyYOLOv2Config, tinyYOLOv3Config, tinyYOLOLiteConfig };
+export { YOLOV3TinyConfig, YOLOV2TinyConfig, YOLOV3Config, YOLOLiteConfig };

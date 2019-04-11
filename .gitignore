@@ -9,8 +9,11 @@ node_modules
 lib
 lib-esm
 _bundles
+
+
 models
 dist
+videos
 # Runtime data
 pids
 *.pid

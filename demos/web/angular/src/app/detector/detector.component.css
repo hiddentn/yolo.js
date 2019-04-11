@@ -13,8 +13,11 @@
 }
 .controls-wrapper{
     display: flex;
-   justify-content: center;
-   align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    margin: 0 10px 0 0;
+    padding: 0 0 0 10px;
 }
 
 .layer {

@@ -5,11 +5,11 @@ import {
 	darknet9000Config,
 	darknetRefrenceConfig,
 	darknetTinyConfig,
-	tinyYOLOLiteConfig,
-	tinyYOLOv2Config,
-	tinyYOLOv3Config,
+	YOLOV3Config,
+	YOLOV2TinyConfig,
+	YOLOV3TinyConfig,
 	YOLODetectorConfig,
-	yolov3Config,
+	YOLOLiteConfig,
 } from '@hiddentn/yolo.js';
 
 @Injectable({
@@ -22,22 +22,22 @@ export class ModelsService {
 		let config: YOLODetectorConfig;
 		if (modelName === 'tiny-yolo-v2') {
 			config = {
-				...tinyYOLOv2Config,
+				...YOLOV2TinyConfig,
 				modelURL: 'http://localhost:5000/models/objectdetection/yolov2-tiny/model.json',
 			};
 		} else if (modelName === 'tiny-yolo-v3') {
 			config = {
-				...tinyYOLOv3Config,
+				...YOLOV3TinyConfig,
 				modelURL: 'http://localhost:5000/models/objectdetection/yolov3-tiny/model.json',
 			};
 		} else if (modelName === 'tiny-yolo-v2-lite') {
 			config = {
-				...tinyYOLOLiteConfig,
+				...YOLOLiteConfig,
 				modelURL: 'http://localhost:5000/models/objectdetection/yolov2-lite/model.json',
 			};
 		} else if (modelName === 'yolo-v3') {
 			config = {
-				...yolov3Config,
+				...YOLOV3Config,
 				modelURL: 'http://localhost:5000/models/objectdetection/yolov3/model.json',
 			};
 		}

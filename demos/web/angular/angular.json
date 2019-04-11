@@ -24,6 +24,7 @@
             ],
             "styles": [
               "src/styles.css",
+              "src/assets/css/dat-gui-light-theme.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
 
             ],

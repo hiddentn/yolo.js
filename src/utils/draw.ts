@@ -1,4 +1,4 @@
-import {Detection} from '../types';
+import { Detection } from '../types';
 
 export function draw(detections: Detection[], ctx: CanvasRenderingContext2D, labelsLength: number) {
     ctx.lineWidth = 1.5;

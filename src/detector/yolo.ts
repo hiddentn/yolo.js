@@ -1,6 +1,7 @@
-import * as tf from '@tensorflow/tfjs';
+import { tf } from '../tf';
 import { Detection , ImageOptions, Input , modelSize , YOLOVersion} from '../types';
 import { draw } from '../utils/draw';
+import { loadModel } from '../utils/modelLoader';
 import { preProcess  } from '../utils/preProcess' ;
 import { Detector, YOLODetectorConfig } from './detector';
 
@@ -36,15 +37,9 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
     /**
      * Loads the model from `modelURL`
      */
-    public async load(): Promise<boolean> {
-      if (tf == null) {
-        throw new Error(
-            'Cannot find TensorFlow.js. If you are using a <script> tag, please ' +
-            'also include @tensorflow/tfjs on the page before using this model.');
-      }
+    public async load(): Promise<void> {
       try {
-        this.model = await tf.loadLayersModel(this.modelURL);
-        return true;
+        this.model = await loadModel(this.modelURL);
       } catch (error) {
         throw error;
       }

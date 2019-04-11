@@ -1,6 +1,7 @@
 import { darknet9000Labels } from '../shared/darknet9000_labels';
 import { darknetImagnetLabels } from '../shared/darknet_imagenet_labels';
 import { ClassifierConfig } from './classifier';
+
 const darknetRefrenceConfig: ClassifierConfig = {
     modelName: 'darknet-refrence',
     modelURL: '',

@@ -8,7 +8,7 @@ import { ErrorService } from '../Services/error.service';
   templateUrl: './classifier.component.html',
   styleUrls: ['./classifier.component.css'],
 })
-export class ClassifierComponent implements OnInit , OnDestroy{
+export class ClassifierComponent implements OnInit, OnDestroy {
 
   @ViewChild('DetectionImage') imageRef: ElementRef;
 
@@ -60,18 +60,18 @@ export class ClassifierComponent implements OnInit , OnDestroy{
     this.isModelLoaded = false;
     this.isModelLoading = false;
     this.classificationExists = false;
-      try {
-        let config = this.modelService.getClassifierConfig(this.modelName);
-        this.classifier = new DarknetClassifier(config);
-      } catch (error) {
-        this.errService.setError(error);
-      }
-     
-    this.imageToClassifiy = this.imageRef.nativeElement as HTMLImageElement; 
+    try {
+      let config = this.modelService.getClassifierConfig(this.modelName);
+      this.classifier = new DarknetClassifier(config);
+    } catch (error) {
+      this.errService.setError(error);
+    }
+
+    this.imageToClassifiy = this.imageRef.nativeElement as HTMLImageElement;
     this.imageToClassifiy.src = this.images[this.selectedImageIndex].src;
   }
   public ngOnDestroy(): void {
-    this.classifier.dispose();   
+    this.classifier.dispose();
   }
 
   public changeSelectedImage(imgid: any) {
@@ -101,20 +101,20 @@ export class ClassifierComponent implements OnInit , OnDestroy{
         (classifications: any) => {
           const p2 = performance.now();
           if (classifications && classifications[0]) {
-          classifications.forEach((item) => {
-            item.score = (item.score * 100).toFixed(2);
-            item.scoretext = `${item.score}%`;
-          });
-          this.best = classifications[0];
-          this.best.time = ((p2 - p1) / 1000).toFixed(3);
-          this.classifications = classifications;
-          this.isClassifing = false;
-          this.classificationExists = true;
+            classifications.forEach((item) => {
+              item.score = (item.score * 100).toFixed(2);
+              item.scoretext = `${item.score}%`;
+            });
+            this.best = classifications[0];
+            this.best.time = ((p2 - p1) / 1000).toFixed(3);
+            this.classifications = classifications;
+            this.isClassifing = false;
+            this.classificationExists = true;
+          }
+        },
+        (err) => {
+          this.errService.setError(`Error Classifing image : ${err}`);
         }
-      },
-      (err) =>{
-        this.errService.setError(`Error Classifing image : ${err}`);
-      }
       );
     }
   }
@@ -122,21 +122,19 @@ export class ClassifierComponent implements OnInit , OnDestroy{
   public async loadModel() {
     this.isModelLoading = true;
     this.classifier.load().then(
-      (loaded) => {
+      () => {
         // model successfully loaded
         this.isModelLoading = false;
-        this.isModelError = !loaded;
-        if (loaded) {
-          this.classifier.cache().then(
-            () => {
-              this.isModelLoaded = true;
-              this.isModelReadyToDetect = true;
-            },
-            (err) => {
-              this.errService.setError(err)
-            }
-          );
-        }
+        this.isModelError = false;
+        this.classifier.cache().then(
+          () => {
+            this.isModelLoaded = true;
+            this.isModelReadyToDetect = true;
+          },
+          (err) => {
+            this.errService.setError(err)
+          }
+        );
       },
       (err) => {
         this.errService.setError(err)

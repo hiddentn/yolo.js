@@ -1,11 +1,10 @@
-import * as tf from '@tensorflow/tfjs';
+import { tf } from '../tf';
 import { Classification, ImageOptions, Input, modelSize } from '../types';
+import { loadModel } from '../utils/modelLoader';
 import { preProcess } from '../utils/preProcess';
 import { Classifier, ClassifierConfig } from './classifier';
-
 export class DarknetClassifier implements Classifier, ClassifierConfig {
   public model: tf.LayersModel;
-
   public modelName: string;
   public modelURL: string;
   public modelSize: modelSize;
@@ -27,19 +26,14 @@ export class DarknetClassifier implements Classifier, ClassifierConfig {
   /**
    * Loads the model from `modelURL`
    */
-  public async load(): Promise<boolean> {
-    if (tf == null) {
-      throw new Error(
-          'Cannot find TensorFlow.js. If you are using a <script> tag, please ' +
-          'also include @tensorflow/tfjs on the page before using this model.');
-    }
+  public async load(): Promise<void> {
     try {
-      this.model = await tf.loadLayersModel(this.modelURL);
-      return true;
+      this.model = await loadModel(this.modelURL);
     } catch (error) {
       throw error;
     }
   }
+
   /**
    * Caches the model
    */
@@ -63,6 +57,12 @@ export class DarknetClassifier implements Classifier, ClassifierConfig {
     }
   }
 
+  /**
+   * the main function that handles the infrence it returns a `Classification[]` that containes the classifications the their scores
+   * @param image the input image `Input`
+   *
+   * @return a `Pormise` that resolves to a `Classification[]`
+   */
   public async classify(image: Input): Promise<Classification[]> {
     await tf.nextFrame();
     const { values, indices } = tf.tidy(() => {
@@ -72,31 +72,36 @@ export class DarknetClassifier implements Classifier, ClassifierConfig {
     });
     const valuesArray = await values.data<'float32'>();
     const indicesArray = await indices.data<'int32'>();
-    tf.dispose({values, indices});
-    return this.createClassifications(valuesArray, indicesArray);
+    tf.dispose({ values, indices });
+    return this.createClassificationsArray(valuesArray, indicesArray);
   }
 
+  /**
+   * the main function that handles the infrence it returns a `Classification[]` that containes the classifications the their scores
+   * @param image the input image `Input`
+   *
+   * @return a `Classification[]`
+   */
   public classifySync(image: Input): Classification[] {
     const { values, indices } = tf.tidy(() => {
       const logits = this.classifyInternal(image);
       const classes = tf.softmax(logits as tf.Tensor);
       return tf.topk(classes, this.topK, true);
     });
-    const valuesArray =  values.dataSync<'float32'>();
+    const valuesArray = values.dataSync<'float32'>();
     const indicesArray = indices.dataSync<'int32'>();
-    tf.dispose({values, indices});
-    return this.createClassifications(valuesArray, indicesArray);
+    tf.dispose({ values, indices });
+    return this.createClassificationsArray(valuesArray, indicesArray);
   }
 
   private classifyInternal(image: Input): tf.Tensor | tf.Tensor[] {
     return tf.tidy(() => {
-      const data = preProcess(image, this.modelSize, this.resizeOption,
-      );
+      const data = preProcess(image, this.modelSize, this.resizeOption);
       return this.model.predict(data[2]);
     });
   }
 
-  private createClassifications(values: Float32Array, indices: Int32Array): Classification[] {
+  private createClassificationsArray(values: Float32Array, indices: Int32Array): Classification[] {
     const classifications: Classification[] = [];
     for (let i = 0; i < indices.length; i++) {
       const c: Classification = {
