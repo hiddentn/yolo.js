@@ -2,6 +2,9 @@
 A work in progress implementaion of the YOLO object detection in javascript running on top of Tensorflow.js 
 
 [![Build Status](https://hiddentn.visualstudio.com/YOLO.JS/_apis/build/status/TheHidden1.YOLO.JS?branchName=master)](https://hiddentn.visualstudio.com/YOLO.JS/_build/latest?definitionId=3&branchName=master)
+[![version](https://img.shields.io/github/package-json/v/TheHidden1/YOLO.JS.svg)](https://github.com/TheHidden1/YOLO.JS/releases)
+[![npm](https://img.shields.io/npm/v/@hiddentn/yolo.js.svg)](https://www.npmjs.com/package/@hiddentn/yolo.js)
+[![license](https://img.shields.io/github/license/TheHidden1/YOLO.JS.svg)](https://github.com/TheHidden1/YOLO.JS/blob/master/LICENSE)
 
 this Readme is outdated and i will edit it soon
 
