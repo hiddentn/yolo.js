@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
     
+    "lib": ["es2015", "dom"],
+
+    "outDir": "build/commonjs",  
     "module": "commonjs",
+    "target": "es5",
+
     "noImplicitAny": false,
     "sourceMap": true,
     "removeComments": false,
     "preserveConstEnums": true,
     "declaration": true,
-    "target": "es5",
-    "lib": ["es2015", "dom"],
     "esModuleInterop": true,
-    "outDir": "./dist",  
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noImplicitReturns": true,
@@ -23,11 +25,12 @@
     "downlevelIteration": true
   },
   "include": [
-    "src/**/*"
+    "src"
   ],
   "exclude": [
-    "demos/",
-    "dist/",
-    "src/**/*_test.ts"
+    "demos/**/**",
+    "dist",
+    "node_modules",
+    "img"
   ]
 }

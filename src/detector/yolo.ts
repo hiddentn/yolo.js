@@ -181,11 +181,13 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      */
     private postProcessRawPrediction(rawPrediction: tf.Tensor[] | tf.Tensor): tf.Tensor[] {
       const layers: Array<tf.Tensor<tf.Rank>> = [];
-      if (this.isTensorOrTensorArray(rawPrediction)) {
+      if (this.isTensorArray(rawPrediction)) {
         // its a single Tensor (v2)
-        layers.push(rawPrediction);
+        for (let i = 0; i < rawPrediction.length; i++) {
+          layers.push(rawPrediction[i]);
+        }
       } else {
-        rawPrediction.forEach((layer) => layers.push(layer));
+        layers.push(rawPrediction);
       }
       const boxes: tf.Tensor[] = [];
       const probs: tf.Tensor[] = [];
@@ -387,8 +389,8 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
      *
      * @returns a `boolean` indicating if it's a `tf.Tensor` or a `tf.Tensor[]`
      */
-    private isTensorOrTensorArray(toBeDetermined: tf.Tensor | tf.Tensor[]): toBeDetermined is tf.Tensor {
-      return (toBeDetermined as tf.Tensor).shape ? true : false;
+    private isTensorArray(toBeDetermined: tf.Tensor | tf.Tensor[]): toBeDetermined is tf.Tensor[] {
+      return (toBeDetermined as tf.Tensor).shape ? false : true;
     }
 
     /**

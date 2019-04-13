@@ -7,13 +7,10 @@ const now = require('performance-now');
 console.log('///Node///');
 const version = tf.version.tfjs;
 const backEnd = tf.getBackend();
-console.log(`Using Tensorflow/tfjs : ${version}`);
-console.log(`Using backend : ${backEnd}`);
-
-// const config = {
-//     ...DarknetTinyConfig,
-//     modelURL: '../../models/classifiers/darknet-tiny/model.json'
-// }
+const config = {
+    ...YOLO.darknetTinyConfig,
+    modelURL: '../../models/classifiers/darknet-tiny/model.json'
+}
 
 // const classifier = new DarknetClassifier(config)
 // const handler = tf.io.fileSystem(config.modelURL);
