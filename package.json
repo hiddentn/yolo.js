@@ -7,8 +7,7 @@
     "url": "https://github.com/TheHidden1/YOLO.JS.git"
   },
   "files": [
-    "lib/**/*",
-    "src/**/*"
+    "dist/**/*"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
