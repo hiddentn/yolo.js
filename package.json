@@ -1,7 +1,7 @@
 {
   "name": "@hiddentn/yolo.js",
   "version": "0.0.12",
-  "description": "a JavaScript API for YOLO Object detection in the browser and Node  with tensorflow.js",
+  "description": "a JavaScript API for YOLO Object detection in the browser and Node with tensorflow.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/TheHidden1/YOLO.JS.git"

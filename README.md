@@ -1,6 +1,8 @@
 # YOLO.JS
 A work in progress implementaion of the YOLO object detection in javascript running on top of Tensorflow.js 
 
+this Readme is outdated and i will edit it soon
+
 ## Examples
 #### YOLOv2-Light
 ![](img/yolo-light-v2.gif)
