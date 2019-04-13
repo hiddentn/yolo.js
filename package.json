@@ -1,6 +1,6 @@
 {
   "name": "@hiddentn/yolo.js",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "description": "YOLO Object detection in javascript & Nodejs",
   "repository": {
     "type": "git",
@@ -10,16 +10,14 @@
     "lib/**/*",
     "src/**/*"
   ],
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "clean:browser": "rimraf dist",
-    "clean:node": "rimraf lib",
+    "clean": "rimraf dist",
     "start:browser": "webpack-dev-server --open --config webpack.dev.js",
-    "build:browser": "npm run clean:browser && webpack --config webpack.prod.js",
-    "build:node": "tsc",
+    "build": "npm run clean &&  npm run lint && tsc && webpack --config webpack.prod.js",
     "lint": "tslint -p . -t verbose",
-    "prepublishOnly": "npm run clean:node && npm run lint && npm run build:node",
+    "prepublishOnly": "npm run build",
     "preversion": "npm run lint",
     "version": "git add -A src",
     "postversion": "git push && git push --tags"

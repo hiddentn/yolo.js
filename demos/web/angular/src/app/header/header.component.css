@@ -1,37 +1,26 @@
-.app-header {
+.header {
   padding: 20px;
   background: #c33764; /* fallback for old browsers */
   background: linear-gradient(45deg,#1d2671,#c33764); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-  transition: all 0.5s ease-in-out;
-  overflow: hidden;
-}
-
-.app-header-collapsed {
-  height: 90px;
-}
-.app-header-expanded {
-  height: 300px;
   display: flex;
   flex-direction: column;
-  justify-content:center;
-  align-items: center;
+  justify-content: center;
+  align-items: left;  
+
 }
 
-
-
-.app-header-title {
-  transition: all 0.5s ease-in-out;
+.header-collapsed{
+  height: 60px;
 }
+.header-expanded{
+  height: 300px;
+}
+
 .font-header {
   font-size: 80px;
 }
 .font-header-collapsed {
-  font-size: 40px;
-}
-.app-header-text-wrap {
-  transition: all 0.5s ease-in-out;
-  text-align: center;
+  font-size: 30px;
 }
 .text-wrap-collapsed {
   opacity: 0;
@@ -49,3 +38,4 @@
   color: #ffffff;
   font-weight: bold;
 }
+

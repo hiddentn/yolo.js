@@ -1,23 +1,16 @@
-import {
-  Detection,
-  ImageOptions,
-  Input,
-  modelSize,
-  YOLOVersion,
-} from '../types';
+import { Detection, ImageOptions, Input, modelSize, YOLOVersion } from '../types';
 interface Detector {
-  load(): Promise<boolean>;
-  cache(): void;
+  load(): Promise<void>;
+  cache(): Promise<void>;
   dispose(): void;
   detect(image: Input): Promise<Detection[]>;
-  detectCPU(image: Input): Promise<Detection[]>;
+  detectSync(image: Input): Detection[];
   draw(detections: Detection[], canvas: HTMLCanvasElement): void;
 }
 
 interface DetectorConfig {
   modelName: string;
   modelURL: string;
-
   iouThreshold: number;
   classProbThreshold: number;
   maxOutput: number;

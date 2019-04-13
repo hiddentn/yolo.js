@@ -1,6 +1,6 @@
-import { Tensor } from '@tensorflow/tfjs-node';
+import { tf } from './tf';
 
-type  Input = HTMLCanvasElement | HTMLVideoElement | ImageData | HTMLImageElement | Tensor;
+type  Input = HTMLCanvasElement | HTMLVideoElement | ImageData | HTMLImageElement | tf.Tensor;
 type  YOLOVersion = 'v2' | 'v3';
 type  ImageResizeOption = 'NearestNeighbor' | 'Bilinear';
 type  modelSize = 128 | 160 | 192 | 224 | 256 | 288 | 320 | 352 | 384 | 416 | 448 | 480 | 512 | 544 | 576 | 608;

@@ -1,6 +1,7 @@
-import * as tf from '@tensorflow/tfjs-node';
+import { tf } from '../tf';
 import { Detection , ImageOptions, Input , modelSize , YOLOVersion} from '../types';
 import { draw } from '../utils/draw';
+import { loadModel } from '../utils/modelLoader';
 import { preProcess  } from '../utils/preProcess' ;
 import { Detector, YOLODetectorConfig } from './detector';
 
@@ -33,51 +34,27 @@ export class YOLODetector implements Detector, YOLODetectorConfig {
       this.masks = options.masks;
       this.resizeOption = options.resizeOption;
     }
-
-       /**
-   * Loads the model from `modelURL`
-   */
-  public async loadFromDisk(handler:any): Promise<boolean> {
-    if (tf == null) {
-      throw new Error(
-          'Cannot find TensorFlow.js. If you are using a <script> tag, please ' +
-          'also include @tensorflow/tfjs on the page before using this model.');
-    }
-    try {
-      if (handler) {
-        this.model = await tf.loadLayersModel(handler);
-      }
-      else {
-        this.model = await tf.loadLayersModel(this.modelURL);
-      }
-      return true;
-    } catch (e) {
-      return e;
-    }
-  }
     /**
      * Loads the model from `modelURL`
      */
-    public async load(): Promise<boolean> {
-      if (tf == null) {
-        throw new Error(
-            'Cannot find TensorFlow.js. If you are using a <script> tag, please ' +
-            'also include @tensorflow/tfjs on the page before using this model.');
-      }
+    public async load(): Promise<void> {
       try {
-        this.model = await tf.loadLayersModel(this.modelURL);
-        return true;
-      } catch (e) {
-        return false;
+        this.model = await loadModel(this.modelURL);
+      } catch (error) {
+        throw error;
       }
     }
     /**
      * Caches the model
      */
-    public cache(): void {
-      const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
-      this.detectSync(dummy);
-      tf.dispose(dummy);
+    public async cache(): Promise<void> {
+      try {
+        const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);
+        await this.detect(dummy);
+        tf.dispose(dummy);
+      } catch (error) {
+        throw error;
+      }
     }
 
     /**

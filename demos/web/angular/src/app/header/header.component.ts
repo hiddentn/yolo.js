@@ -10,12 +10,12 @@ export class HeaderComponent implements OnInit {
 
   public isHeaderCollapsed: boolean;
   constructor(private headerService: HeaderService ) {
-    this.isHeaderCollapsed = headerService.isHeaderCollapsed;
+    
   }
 
   public ngOnInit() {
-    this.headerService.onToogle.subscribe(() => {
-      this.isHeaderCollapsed = this.headerService.isHeaderCollapsed;
+    this.headerService.currentState.subscribe((state) => {
+      this.isHeaderCollapsed = state;
     });
   }
 }

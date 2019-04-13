@@ -1,111 +1,76 @@
 <div class="classifier-wrapper">
-  <div class="image-wrapper border shadow-sm">
-    <div class="image-main">
-      <img
-        id="classification-image"
-        class="img-class"
-      />
-    </div>
-    <div class="image-gallery">
-      <div class="sample-images-wrap">
-        <img
-          *ngFor="let img of images"
-          [ngClass]="{ 'sample-image-active': selectedImageIndex === img.id }"
-          src="{{ img.src }}"
-          alt="{{ img.name }}"
-          class="sample-image"
-          (click)="changeSelectedImage(img.id)"
-        />
-      </div>
+	<div class="image-wrapper">
+		<div class="image-main">
+			<img id="classification-image" class="img-class" #DetectionImage />
+		</div>
 
-      <label class="btn btn-outline-primary" for="my-file-selector">
-        <input
-          id="my-file-selector"
-          #imageInput
-          (change)="readURL(imageInput)"
-          type="file"
-          accept="image/png, image/jpeg"
-          style="display:none;"
-        />
-        Select an image
-      </label>
-    </div>
-  </div>
-  <div class="controls-wrapper border shadow-sm">
-    <div class="controls-buttons-panel border-bottom">
-      <button
-        id="ClassifyBtn"
-        (click)="classifiy()"
-        class="btn btn-outline-secondary custom-btn"
-        [disabled]="isClassifing || !isModelLoaded"
-      >
-        <span *ngIf="!isClassifing">Classify</span>
-        <div
-          *ngIf="isClassifing"
-          class="spinner-border text-success"
-          role="status"
-        >
-          <span class="sr-only">Loading...</span>
-        </div>
-      </button>
-      <button
-        id="loadBtn"
-        (click)="loadModel()"
-        class="btn custom-btn"
-        [disabled]="isModelLoaded || modelError"
-        [ngClass]="isReadyToDetect ? 'btn-success' : 'btn-primary'"
-        [ngClass]="{ 'btn-danger': modelError }"
-      >
-        <div
-          *ngIf="isModelLoading"
-          class="spinner-border spinner-border-sm"
-          style="font-size:10px"
-          role="status"
-        >
-          <span class="sr-only">Loading...</span>
-        </div>
-        <span *ngIf="isModelLoaded">Loaded</span>
-        <span *ngIf="modelError">Error please Try Again</span>
-        <span *ngIf="!isModelLoaded && !isModelLoading">Load</span>
-      </button>
-    </div>
-    <div class="controls-result-panel">
-      <div class="text-result-panel"  *ngIf="classificationExists">
-        <span
-          id="result-text"
-          style="font-size: 15px;"
-          class="text-dark text-justify font-weight-lighter text-monospace"
-        >
-          - I think this is a <kbd class="shadow-lg">{{ best.label }}</kbd> with
-          a confidence score of
-          <kbd class="shadow-lg">{{ best.scoretext }}</kbd> and it took me
-          <kbd class="shadow-lg">{{ best.time }} second(s)</kbd>
-          to do it. my name is
-          <kbd class="shadow-lg">{{classifier.modelName}}</kbd> and i see in
-          <kbd class="shadow-lg"
-            >{{ classifier.modelSize }}x{{ classifier.modelSize }}</kbd
-          >
-        </span>
-      </div>
-      <div class="classifcation-result-panel">
-        <div
-          *ngFor="let item of classifications; let i = index"
-          class="progress p-bar shadow-sm"
-          style="height:30px;"
-        >
-          <div
-            class="progress-bar {{ colors[i] }} text-dark"
-            role="progressbar"
-            style="font-size: 15px;padding:10px;"
-            [ngStyle]="{ width: item.scoretext }"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          >
-            {{ item.label }}
-          </div>
-          <span style="margin-right:15px;">{{ item.scoretext }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
+		<div class="image-gallery">
+			<div class="sample-images-wrap">
+				<img
+					*ngFor="let img of images"
+					[ngClass]="{ 'sample-image-active': selectedImageIndex === img.id }"
+					src="{{ img.src }}"
+					alt="{{ img.name }}"
+					class="sample-image"
+					(click)="changeSelectedImage(img.id)"
+				/>
+			</div>
+			<label class="btn btn-outline-primary font-weight-lighter" for="imageSelector">
+				<input id="imageSelector" #imageInput (change)="readURL(imageInput)" type="file" accept="image/png, image/jpeg" style="display:none;" />
+				Select an image
+			</label>
+		</div>
+	</div>
+
+	<div class="controls-wrapper">
+		<div class="controls-buttons-panel border-bottom">
+			<button id="ClassifyBtn" (click)="classifiy()" class="btn btn-outline-secondary custom-btn font-weight-lighter" [disabled]="isClassifing || !isModelLoaded">
+				<span *ngIf="!isClassifing">Classify</span>
+				<div *ngIf="isClassifing" class="spinner-border text-success" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+			</button>
+			<button
+				id="loadBtn"
+				(click)="loadModel()"
+				class="btn custom-btn font-weight-lighter"
+				[disabled]="isModelLoaded || isModelError"
+				[ngClass]="isModelReadyToDetect ? 'btn-success' : 'btn-primary'"
+				[ngClass]="{ 'btn-danger': isModelError }"
+			>
+				<div *ngIf="isModelLoading" class="spinner-border spinner-border-sm" style="font-size:10px" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+				<span *ngIf="isModelLoaded">Loaded</span>
+				<span *ngIf="isModelError">Error please Try Again</span>
+				<span *ngIf="!isModelLoaded && !isModelLoading">Load</span>
+			</button>
+		</div>
+		<div class="controls-result-panel">
+			<div class="text-result-panel" *ngIf="classificationExists">
+				<span id="result-text" style="font-size: 15px;" class="text-dark text-justify font-weight-lighter text-monospace">
+					- I think this is a <kbd class="shadow-lg">{{ best.label }}</kbd> with a confidence score of <kbd class="shadow-lg">{{ best.scoretext }}</kbd> and it took me
+					<kbd class="shadow-lg">{{ best.time }} second(s)</kbd>
+					to do it. my name is
+					<kbd class="shadow-lg">{{ classifier.modelName }}</kbd> and i see in
+					<kbd class="shadow-lg">{{ classifier.modelSize }}x{{ classifier.modelSize }}</kbd>
+				</span>
+			</div>
+			<div class="classifcation-result-panel" *ngIf="classificationExists">
+				<div *ngFor="let item of classifications; let i = index" class="progress p-bar shadow-sm" style="height:30px;">
+					<div
+						class="progress-bar {{ colors[i] }} text-dark"
+						role="progressbar"
+						style="font-size: 15px;padding:10px;"
+						[ngStyle]="{ width: item.scoretext }"
+						aria-valuemin="0"
+						aria-valuemax="100"
+					>
+						{{ item.label }}
+					</div>
+					<span style="margin-right:15px;">{{ item.scoretext }}</span>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

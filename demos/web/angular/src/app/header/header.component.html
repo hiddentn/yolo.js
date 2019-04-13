@@ -1,9 +1,8 @@
-<div class="app-header  text-light" [ngClass]="isHeaderCollapsed ? 'app-header-collapsed':'app-header-expanded'">
-  <div class="app-header-title  font-weight-lighter   font-header" [ngClass]="{'font-header-collapsed': isHeaderCollapsed}">
-    YOLO.JS
-    </div>
-  <span class="app-header-text-wrap" style="max-width:40rem;" [ngClass]="{'text-wrap-collapsed': isHeaderCollapsed}">
-      A work in progress implementaion of the YOLO object detection in <kbd class="bg-js">JavaScript</kbd> 
-      running on top of <kbd class="bg-tfjs">Tensorflow.js</kbd> 
-  </span> 
-  </div>
+<div class="header text-light animate shadow" [ngClass]=" isHeaderCollapsed ? 'header-collapsed' : 'header-expanded' ">
+	<div class="animate font-weight-lighter font-mt font-header" [ngClass]="{ 'font-header-collapsed': isHeaderCollapsed }">
+		YOLO.JS
+	</div>
+	<span class="animate text-break"  [ngClass]="{ 'text-wrap-collapsed': isHeaderCollapsed }">
+		A work in progress implementaion of the YOLO object detection in <kbd class="bg-js">JavaScript</kbd> running on top of <kbd class="bg-tfjs">Tensorflow.js</kbd>
+	</span>
+</div>
