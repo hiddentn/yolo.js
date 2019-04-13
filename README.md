@@ -1,6 +1,8 @@
 # YOLO.JS
 A work in progress implementaion of the YOLO object detection in javascript running on top of Tensorflow.js 
 
+[![Build Status](https://hiddentn.visualstudio.com/YOLO.JS/_apis/build/status/TheHidden1.YOLO.JS?branchName=master)](https://hiddentn.visualstudio.com/YOLO.JS/_build/latest?definitionId=3&branchName=master)
+
 this Readme is outdated and i will edit it soon
 
 ## Examples
