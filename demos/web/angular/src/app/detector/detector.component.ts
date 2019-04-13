@@ -8,18 +8,18 @@ import { ModelsService } from '../Services/models.service';
 import { Stats } from '../stats';
 
 @Component({
-  selector: 'app-detector',
-  templateUrl: './detector.component.html',
-  styleUrls: ['./detector.component.css'],
+	selector: 'app-detector',
+	templateUrl: './detector.component.html',
+	styleUrls: ['./detector.component.css'],
 })
-export class DetectorComponent implements OnInit,OnDestroy {
- 
+export class DetectorComponent implements OnInit, OnDestroy {
+
 	@ViewChild('videoSrc') public vidSource: ElementRef;
 	@ViewChild('videoLayer') public vidLayer: ElementRef;
 	@ViewChild('detectionCanvas') public detCanvas: ElementRef;
 	@ViewChild('performanceLayer') public perfLayer: ElementRef;
-  @ViewChild('controlsPanel') public controlPanel: ElementRef;
-  
+	@ViewChild('controlsPanel') public controlPanel: ElementRef;
+
 	public modelName: string;
 	public detector: YOLODetector;
 
@@ -50,27 +50,27 @@ export class DetectorComponent implements OnInit,OnDestroy {
 
 	// perf meter and controls gui
 	public perfMeter: Stats;
-  public controlsGUI: dat.GUI;
-  
-  public mobile:any;
-  public cameraconfig:any;
+	public controlsGUI: dat.GUI;
+
+	public mobile: any;
+	public cameraconfig: any;
 
 	constructor(private route: ActivatedRoute, private models: ModelsService, private errService: ErrorService) {
 		this.isCameraEnabled = true
-    this.mobile = this.isMobile()
-    this.cameraconfig = {
-      audio: false,
-      video: {
-        facingMode: 'environment',
-        width: {
-          ideal: this.mobile ? undefined :  1920,
-        },
-        height: {
-          ideal: this.mobile ? undefined : 1080,
-        },
-      },
-    };
-  }
+		this.mobile = this.isMobile()
+		this.cameraconfig = {
+			audio: false,
+			video: {
+				facingMode: 'environment',
+				width: {
+					ideal: this.mobile ? undefined : 1920,
+				},
+				height: {
+					ideal: this.mobile ? undefined : 1080,
+				},
+			},
+		};
+	}
 
 	public ngOnInit() {
 		this.modelName = this.route.snapshot.paramMap.get('name');
@@ -117,6 +117,17 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		});
 		// fullscreen stuff
 		this.vidLayer.nativeElement.addEventListener('fullscreenchange', () => (this.isAppfullScreen = !this.isAppfullScreen), false);
+		// vieo element fullscreen button hook
+		// this.videoSource.addEventListener('fullscreenchange', (e) => {
+		// 	debugger
+		// 	console.log("hehe")
+		// 	e.preventDefault();
+		// 	if (this.isAppfullScreen) {
+		// 		this.vidLayer.nativeElement.exitFullscreen()
+		// 	} else {
+		// 		this.vidLayer.nativeElement.requestFullscreen();
+		// 	}
+		// }, false);
 		// fullscreen interceptor
 		document.addEventListener('keydown', (e) => {
 			if (e.key === 'F11') {
@@ -127,7 +138,7 @@ export class DetectorComponent implements OnInit,OnDestroy {
 
 		this.perfMeter = new Stats(0);
 		this.perfLayer.nativeElement.appendChild(this.perfMeter.dom);
-		if (this.isCameraEnabled ) {
+		if (this.isCameraEnabled) {
 			this.initCamera();
 		}
 		try {
@@ -137,13 +148,13 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		} catch (err) {
 			this.errService.setError(err);
 		}
-  }
-  ngOnDestroy(): void {
-    this.stopDetection();
-    this.stopVideoTrack();
-    this.pauseAllMediaStreams();
-    this.detector.dispose();   
-  }
+	}
+	ngOnDestroy(): void {
+		this.stopDetection();
+		this.stopVideoTrack();
+		this.pauseAllMediaStreams();
+		this.detector.dispose();
+	}
 
 	public async loadModel() {
 		this.detector.load().then(
@@ -177,14 +188,14 @@ export class DetectorComponent implements OnInit,OnDestroy {
 							this.isPageVisible
 						) {
 							this.perfMeter.begin();
-							const results =  this.detector.detectSync(this.videoSource);
+							const results = this.detector.detectSync(this.videoSource);
 							this.detector.draw(results, this.outputCanvas);
 							this.perfMeter.end();
 						}
 					} catch (e) {
 						console.error(e);
 					}
-				},this.MaxframeRateMs);
+				}, this.MaxframeRateMs);
 			}
 		} else {
 			this.errService.setError('Please Load The Model first!');
@@ -198,7 +209,7 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		this.isDetecting = false;
 	}
 	public SetMaxFrameRate() {
-		this.MaxframeRateMs  = 1000 / this.MaxframeRate;
+		this.MaxframeRateMs = 1000 / this.MaxframeRate;
 		if (this.isDetecting) {
 			this.stopDetection();
 			this.startDetection();
@@ -219,7 +230,7 @@ export class DetectorComponent implements OnInit,OnDestroy {
 	}
 	public resumeVideoTrack() {
 		if (this.isCameraEnabled && !this.videoSource.srcObject) {
-				this.initCamera();
+			this.initCamera();
 		}
 	}
 
@@ -235,7 +246,7 @@ export class DetectorComponent implements OnInit,OnDestroy {
 			},
 		);
 	}
-	public pauseAllMediaStreams(): void {}
+	public pauseAllMediaStreams(): void { }
 
 	public initControls(): void {
 		try {
@@ -264,15 +275,15 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		} catch (err) {
 			this.errService.setError(err);
 		}
-  }
-	
+	}
+
 	public playVideoUrl(fromurl) {
 		const val = (fromurl as HTMLInputElement).value
-		if(val === undefined || val == null || val.length <= 0) {
-			this.errService.setError("Please Enter a Valid URL");	
+		if (val === undefined || val == null || val.length <= 0) {
+			this.errService.setError("Please Enter a Valid URL");
 		} else {
-		this.disableCamea();
-		this.videoSource.src = val;
+			this.disableCamea();
+			this.videoSource.src = val;
 		}
 	}
 
@@ -288,14 +299,14 @@ export class DetectorComponent implements OnInit,OnDestroy {
 		}
 	}
 
-  isAndroid() {
-    return /Android/i.test(navigator.userAgent);
-  }
-  isiOS() {
-    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  }
-  isMobile() {
-    return this.isAndroid() || this.isiOS();
-  }
-  
+	isAndroid() {
+		return /Android/i.test(navigator.userAgent);
+	}
+	isiOS() {
+		return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+	}
+	isMobile() {
+		return this.isAndroid() || this.isiOS();
+	}
+
 }

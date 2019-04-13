@@ -1,31 +1,20 @@
 import { Injectable, EventEmitter } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HeaderService {
 
-  public onToogle: EventEmitter<null>;
-
-  public isHeaderCollapsed: boolean;
+  private state = new BehaviorSubject(false);
+  currentState = this.state.asObservable();
 
   constructor() {
-    this.isHeaderCollapsed = false;
-    this.onToogle =  new EventEmitter<null>();
   }
-
-  public toogle = () => {
-    this.isHeaderCollapsed = ! this.isHeaderCollapsed;
-    this.onToogle.emit();
+  public collapse(){
+    this.state.next(true)
   };
-  public collapse = () => {
-    this.isHeaderCollapsed = true;
-    this.onToogle.emit();
+  public expand() {
+    this.state.next(false)
   };
-  public expand = () => {
-    this.isHeaderCollapsed = false;
-    this.onToogle.emit();
-  };
-
-
 }
