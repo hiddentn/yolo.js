@@ -36,6 +36,8 @@ export class DetectorComponent implements OnInit, OnDestroy {
 	public isModelreadyToDetect: boolean;
 	public isDetecting: boolean;
 
+	public isLoadBtnClicked:boolean
+
 
 	public isModelLoded: boolean;
 
@@ -56,6 +58,7 @@ export class DetectorComponent implements OnInit, OnDestroy {
 	public cameraconfig: any;
 
 	constructor(private route: ActivatedRoute, private models: ModelsService, private errService: ErrorService) {
+		this.isLoadBtnClicked = false;
 		this.isCameraEnabled = true
 		this.mobile = this.isMobile()
 		this.cameraconfig = {
@@ -157,6 +160,7 @@ export class DetectorComponent implements OnInit, OnDestroy {
 	}
 
 	public async loadModel() {
+		this.isLoadBtnClicked = true; 
 		this.detector.load().then(
 			() => {
 				this.isModelLoded = true;

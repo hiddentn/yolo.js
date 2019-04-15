@@ -16,6 +16,7 @@ import {
 	providedIn: 'root',
 })
 export class ModelsService {
+	baseURL:string = "https://raw.githubusercontent.com/TheHidden1/YOLO.JS.Weights/master/"
 	constructor() {}
 
 	public getDetectorConfig(modelName: string): YOLODetectorConfig {
@@ -23,22 +24,22 @@ export class ModelsService {
 		if (modelName === 'tiny-yolo-v2') {
 			config = {
 				...YOLOV2TinyConfig,
-				modelURL: 'http://localhost:5000/models/objectdetection/yolov2-tiny/model.json',
+				modelURL: this.baseURL+'objectdetection/yolov2-tiny/model.json',
 			};
 		} else if (modelName === 'tiny-yolo-v3') {
 			config = {
 				...YOLOV3TinyConfig,
-				modelURL: 'http://localhost:5000/models/objectdetection/yolov3-tiny/model.json',
+				modelURL: this.baseURL+'objectdetection/yolov3-tiny/model.json',
 			};
 		} else if (modelName === 'tiny-yolo-v2-lite') {
 			config = {
 				...YOLOLiteConfig,
-				modelURL: 'http://localhost:5000/models/objectdetection/yolov2-lite/model.json',
+				modelURL: this.baseURL+'objectdetection/yolov2-lite/model.json',
 			};
 		} else if (modelName === 'yolo-v3') {
 			config = {
 				...YOLOV3Config,
-				modelURL: 'http://localhost:5000/models/objectdetection/yolov3/model.json',
+				modelURL: this.baseURL+'objectdetection/yolov3/model.json',
 			};
 		}
 		return config;
@@ -48,22 +49,22 @@ export class ModelsService {
 		if (modelName === 'darknet-tiny') {
 			config = {
 				...darknetTinyConfig,
-				modelURL: 'http://localhost:5000/models/classifiers/darknet-tiny/model.json',
+				modelURL: this.baseURL+'classifiers/darknet-tiny/model.json',
 			};
 		} else if (modelName === 'darknet-refrence') {
 			config = {
 				...darknetRefrenceConfig,
-				modelURL: 'http://localhost:5000/models/classifiers/darknet-reference/model.json',
+				modelURL: this.baseURL+'classifiers/darknet-reference/model.json',
 			};
 		} else if (modelName === 'darknet-19') {
 			config = {
 				...darknet19Config,
-				modelURL: 'http://localhost:5000/models/classifiers/darknet-19/model.json',
+				modelURL: this.baseURL+'classifiers/darknet-19/model.json',
 			};
 		} else if (modelName === 'darknet-9000') {
 			config = {
 				...darknet9000Config,
-				modelURL: 'http://localhost:5000/models/classifiers/darknet-9000/model.json',
+				modelURL: this.baseURL+'classifiers/darknet-9000/model.json',
 			};
 		}
 		return config;
