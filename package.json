@@ -1,6 +1,6 @@
 {
   "name": "@hiddentn/yolo.js",
-  "version": "0.0.12",
+  "version": "0.1.0",
   "description": "a JavaScript API for YOLO Object detection in the browser and Node with tensorflow.js",
   "repository": {
     "type": "git",
@@ -9,21 +9,17 @@
   "files": [
     "build/**/*"
   ],
-
   "main": "build/commonjs/index.js",
   "types": "build/commonjs/index.d.ts",
   "module": "build/es6/index.js",
-
   "jsdelivr": "dist/yolo.js",
   "unpkg": "dist/yolo.js",
-
-
   "scripts": {
     "clean": "rimraf dist build",
     "start:browser": "webpack-dev-server --open --config webpack.dev.js",
     "build:browser": "webpack --config webpack.prod.js",
-    "build:commonjs":"tsc",
-    "build:es6":"tsc --p tsconfig.es6.json",
+    "build:commonjs": "tsc",
+    "build:es6": "tsc --p tsconfig.es6.json",
     "build": "npm run clean && npm run lint && npm run build:browser && npm run build:commonjs && npm run build:es6",
     "lint": "tslint -p . -t verbose"
   },
