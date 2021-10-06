@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>YOLO</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div id="media-container" class="media-container">
+        <!-- VIDEO -->
+        <video id="data-source" class="media" src="assets/video/test2.mp4" autoplay controls muted
+            crossorigin="anonymous"></video>
+        <!-- IMAGE -->
+        <!-- <img id="data-source" class="media" src="/assets/img/person.jpg" crossorigin="anonymous" /> -->
+        <!-- CAMERA -->
+        <!-- <video id="data-source" class="media" autoplay controls crossorigin="anonymous" muted></video>
+        <script src="assets/js/camera.pollyfill.js"></script>
+        <script src="assets/js/camera.starter.js"></script> -->
+        <canvas id="draw-canvas" class="draw-canvas"></canvas>
+    </div>
+    <script src="assets/js/dims.observer.js"></script>
+    <script src="assets/js/stats.min.js"></script>
+    <script src="assets/js/stats.init.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
+    <script src="http://localhost:8080/yolo.js"></script>
+    <script src="index.js"></script>
+
+
+</body>
+
+</html>

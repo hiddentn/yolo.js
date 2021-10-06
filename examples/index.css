@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css?family=Ubuntu&display=swap");
+
+html,
+body,
+div,
+a,
+p,
+span {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  /* remove scrollbar space */
+  background: transparent;
+  /* optional: just make scrollbar invisible */
+}
+
+.media-container {
+  max-width: 1280px;
+  max-height: 720px;
+  position: relative;
+}
+.media {
+  min-width: 858px;
+  min-height: 480px;
+  height: 100%;
+  width: 100%;
+  /* the width and height will specified by the resize observer */
+  z-index: 80;
+}
+.draw-canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.camera {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
